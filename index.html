@@ -203,7 +203,7 @@ const T={bg:"#030c18",card:"#061424",card2:"#0a1e33",border:"#0e2440",blue:"#1a7
 const STABÆK_SURNAMES=new Set(["Sørlie","Varvin-Kvamme","Hytterød","Velten-Simonsen","Hanche-Olsen","Osman","Bachke","Kjos","Dequeemani","Dahl Krugerud","Løberg","Nikolaisen","Essayas","Riis-Eriksen","Molnes","Mathisen","Naustvik","Tørmoen-Jourde","Valan","Jacobsen","Abuissa","Brekke","Bull-Rostrup","Forsström","Kirkenær","Lerdrup","Wallace","Hammerich","Slæperud","Wangen","Johannessen","Willand-Grønli","Da Rocha","Neiden","Omland","Skjellvik","Hageland","Kocani"]);
 function isStabek(n){for(const s of STABÆK_SURNAMES)if(n.toLowerCase().includes(s.toLowerCase()))return true;return false;}
 
-const DEFAULT_POS={1:"GK",2:"CB",3:"CB",4:"CB",5:"WB",6:"CM",7:"CM",8:"CM",9:"FW",10:"AM",11:"FW",12:"SUB",13:"CM",14:"WB",15:"FW",16:"SUB",17:"SUB",18:"CM",19:"FW",20:"WB",21:"SUB",22:"CM",23:"WB",24:"SUB",25:"CM",26:"FW",50:"FW",99:"GK",38:"SUB"};
+const DEFAULT_POS={1:"GK",2:"CB",3:"CB",4:"CB",5:"WB",6:"CM",7:"CM",8:"CM",9:"FW",10:"AM",11:"FW",12:"SUB",13:"CM",14:"WB",15:"FW",16:"SUB",17:"SUB",18:"WB",19:"FW",20:"WB",21:"CB",22:"CM",23:"WB",24:"SUB",25:"CM",26:"FW",50:"FW",70:"FW",99:"GK",38:"SUB"};
 const POS_LABEL={GK:"Keeper",CB:"Stopper",WB:"Wingback",CM:"Midtbane",AM:"Off. MF",FW:"Angriper",SUB:"Innbytter"};
 const POS_COLOR={GK:T.amber,CB:T.blue,WB:T.purple,CM:T.blueL,AM:T.green,FW:T.red,SUB:T.muted};
 const POS_ORDER=["GK","CB","WB","CM","AM","FW","SUB"];
@@ -357,10 +357,18 @@ async function parsePDFWithAI(file){
   const key=getGeminiKey();
   if(!key||key==='__skip__'||key.length<10) throw new Error("Ingen Gemini API-nøkkel. Klikk ⚙ øverst til høyre for å sette den opp.");
   const base64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.onerror=()=>rej(new Error("Lesefeil"));r.readAsDataURL(file);});
-  const MODELS=["gemini-2.0-flash","gemini-1.5-flash-latest","gemini-1.5-flash-001","gemini-1.5-pro-latest"];
+  // Try multiple API versions + models — first to succeed wins
+  const ATTEMPTS=[
+    ["v1",     "gemini-1.5-flash"],
+    ["v1beta", "gemini-2.0-flash-exp"],
+    ["v1",     "gemini-1.5-pro"],
+    ["v1beta", "gemini-1.5-flash-8b"],
+    ["v1beta", "gemini-1.5-flash"],
+    ["v1beta", "gemini-1.0-pro-vision-latest"],
+  ];
   let lastErr="";
-  for(const model of MODELS){
-    const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+  for(const [ver,model] of ATTEMPTS){
+    const url=`https://generativelanguage.googleapis.com/${ver}/models/${model}:generateContent?key=${key}`;
     try{
       const resp=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:"application/pdf",data:base64}},{text:PDF_PROMPT}]}],generationConfig:{temperature:0,maxOutputTokens:4096}})});
       if(resp.ok){
@@ -371,10 +379,10 @@ async function parsePDFWithAI(file){
       }
       const e=await resp.json().catch(()=>({}));
       lastErr=e?.error?.message||`HTTP ${resp.status}`;
-      if(resp.status===400||resp.status===403)break;
+      if(resp.status===400||resp.status===403)break; // bad API key — stop immediately
     }catch(fetchErr){lastErr=fetchErr.message;}
   }
-  throw new Error(`Gemini feil: ${lastErr} — Sjekk nøkkelen i Innstillinger (⚙)`);
+  throw new Error(`Gemini feil: ${lastErr} — Sjekk nøkkelen i ⚙ Innstillinger`);
 }
 
 function buildFromPDF(d,filename){
@@ -509,6 +517,31 @@ const DEMOS=[
       {name:"(15) C. Bachke",jersey:15,isStabek:true,pos:"FW",total:58,plus:9,minus:12,efficiency:-3,smart_pass:11,duel_def:3,duel_press:0,shot:4,v1:24,counterattack:2,assists:0,clearances:0,gk_save:0,shots:4,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:24,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
       {name:"(9) M. Kjos",jersey:9,isStabek:true,pos:"FW",total:48,plus:5,minus:6,efficiency:-1,smart_pass:11,duel_def:1,duel_press:0,shot:6,v1:13,counterattack:1,assists:0,clearances:3,gk_save:0,shots:6,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:13,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
       {name:"(14) H. Hytterød",jersey:14,isStabek:true,pos:"WB",total:34,plus:3,minus:3,efficiency:0,smart_pass:10,duel_def:3,duel_press:0,shot:1,v1:4,counterattack:0,assists:0,clearances:3,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:4,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null}
+    ]
+  },
+  {
+    id:"d3",filename:"Stabæk U15 vs HamKam U15",stabTeam:"Stabæk U15",oppTeam:"HamKam U15",
+    date:"2026-05-10",competition:"OBOS Nasjonal G15 2026",scoreFor:6,scoreAgainst:2,
+    source:"pdf",possession:63,pasningar:609,avslutninger:28,touchBoks:79,passComp:83,
+    xG:3.37,maal:6,dribbSuksess:38,highTrans:null,highTransP:null,
+    createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",
+    oppShots:9,xGa:0.69,oppGoals:2,oppAttacks:null,pressureRegains:70,
+    dodPlusMinus:2,oppCorners:3,oppSetPieces:5,
+    players:[
+      {name:"William Neiden",jersey:6,isStabek:true,pos:"CM",shots:3,goals:0,xG_player:0.14,key_passes:4,assists:2,xGChain:2.31,xG_buildup:1.59,pressures:9,tackles:0,interceptions:0,clearances:0,dribbles:3,dispossessions:4,passes_into_box:3,final_third_passes:27,pass_pct:85,touches_in_box:10,shot:3,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Ludvig Slæperud",jersey:10,isStabek:true,pos:"CM",shots:6,goals:0,xG_player:0.28,key_passes:4,assists:2,xGChain:2.15,xG_buildup:1.92,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:3,dispossessions:2,passes_into_box:1,final_third_passes:43,pass_pct:81,touches_in_box:5,shot:6,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Nicolai Hageland",jersey:21,isStabek:true,pos:"CB",shots:1,goals:0,xG_player:0.01,key_passes:1,assists:0,xGChain:1.85,xG_buildup:1.85,pressures:15,tackles:1,interceptions:0,clearances:4,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:22,pass_pct:84,touches_in_box:0,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Max Hammerich",jersey:9,isStabek:true,pos:"FW",shots:4,goals:3,xG_player:1.0,key_passes:2,assists:1,xGChain:1.64,xG_buildup:0.1,pressures:31,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:5,pass_pct:90,touches_in_box:10,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Frantz Johannessen",jersey:18,isStabek:true,pos:"WB",shots:1,goals:0,xG_player:0.14,key_passes:2,assists:0,xGChain:1.5,xG_buildup:1.33,pressures:25,tackles:4,interceptions:0,clearances:0,dribbles:2,dispossessions:1,passes_into_box:1,final_third_passes:22,pass_pct:81,touches_in_box:12,shot:1,v1:2,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Oliver Lerdrup",jersey:7,isStabek:true,pos:"AM",shots:6,goals:1,xG_player:0.71,key_passes:3,assists:0,xGChain:1.48,xG_buildup:1.14,pressures:26,tackles:0,interceptions:0,clearances:0,dribbles:1,dispossessions:3,passes_into_box:0,final_third_passes:9,pass_pct:61,touches_in_box:13,shot:6,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Carl-Alexander Forsström",jersey:3,isStabek:true,pos:"CB",shots:0,goals:0,xG_player:0.0,key_passes:3,assists:0,xGChain:1.39,xG_buildup:1.04,pressures:18,tackles:6,interceptions:0,clearances:1,dribbles:3,dispossessions:2,passes_into_box:4,final_third_passes:26,pass_pct:85,touches_in_box:0,shot:0,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Markus Skjellvik",jersey:19,isStabek:true,pos:"FW",shots:1,goals:1,xG_player:0.49,key_passes:0,assists:0,xGChain:1.23,xG_buildup:0.74,pressures:13,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:0,final_third_passes:6,pass_pct:76,touches_in_box:2,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Jacob Wallace",jersey:8,isStabek:true,pos:"CM",shots:4,goals:0,xG_player:0.27,key_passes:0,assists:0,xGChain:1.08,xG_buildup:0.92,pressures:6,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:0,final_third_passes:14,pass_pct:80,touches_in_box:2,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Edvard Bull-Rostrup",jersey:2,isStabek:true,pos:"CB",shots:1,goals:0,xG_player:0.06,key_passes:1,assists:0,xGChain:1.02,xG_buildup:1.02,pressures:15,tackles:4,interceptions:0,clearances:5,dribbles:1,dispossessions:1,passes_into_box:2,final_third_passes:17,pass_pct:97,touches_in_box:3,shot:1,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Steinar Wangen",jersey:11,isStabek:true,pos:"WB",shots:1,goals:1,xG_player:0.28,key_passes:0,assists:0,xGChain:0.63,xG_buildup:0.63,pressures:20,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:1,final_third_passes:9,pass_pct:65,touches_in_box:6,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Sigurd Oppedal",jersey:70,isStabek:true,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.62,xG_buildup:0.62,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:2,final_third_passes:9,pass_pct:81,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Nicolas Da Rocha",jersey:12,isStabek:true,pos:"GK",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.35,xG_buildup:0.35,pressures:0,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:0,pass_pct:74,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Altin Kocani",jersey:27,isStabek:true,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:1,assists:0,xGChain:0.29,xG_buildup:0.29,pressures:8,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:1,final_third_passes:3,pass_pct:100,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null}
     ]
   }
 ];
