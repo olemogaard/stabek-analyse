@@ -208,13 +208,112 @@ const POS_LABEL={GK:"Keeper",CB:"Stopper",WB:"Wingback",CM:"Midtbane",AM:"Off. M
 const POS_COLOR={GK:T.amber,CB:T.blue,WB:T.purple,CM:T.blueL,AM:T.green,FW:T.red,SUB:T.muted};
 const POS_ORDER=["GK","CB","WB","CM","AM","FW","SUB"];
 
+/* ── Role KPIs — aligned with Stabæk Akademi fagplan ────────────── *
+ * GK:  Kontroll på keeperspill, smarte distribusjoner, sikring i boks
+ * CB:  Vinner dueller, starter angrep, holder linjene
+ * WB:  Kombinerer framover, slår seg fri 1v1, bidrar defensivt
+ * CM:  Sirkulerer ballen trygt, presser høyt, binder lag
+ * AM:  Skaper sjanser, avslutter, trekker fra 1v1
+ * FW:  Angriper bakrom, avslutter, trigger press framover
+ */
 const ROLE_KPIS={
-  GK:{player:[{id:"total",label:"Aksjoner",t:50,op:">="},{id:"efficiency",label:"Effektivitet",t:0,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:8,op:">="},{id:"gk_save",label:"Redninger",t:0,op:">="},{id:"clearances",label:"Klaringer",t:1,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:0.5,op:">="},{id:"clearances",label:"Klaringer",t:1,op:">="},{id:"tackles",label:"Taklinger",t:0,op:">="}],team:[{id:"total",label:"Sekvenser",t:40,op:">="},{id:"shot",label:"Avslut-seq",t:0,op:">="}]},
-  CB:{player:[{id:"total",label:"Aksjoner",t:40,op:">="},{id:"efficiency",label:"Effektivitet",t:0,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:15,op:">="},{id:"duel_def",label:"Def. dueller",t:5,op:">="},{id:"clearances",label:"Klaringer",t:2,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:0.5,op:">="},{id:"tackles",label:"Taklinger",t:2,op:">="},{id:"clearances",label:"Klaringer",t:2,op:">="},{id:"interceptions",label:"Interceptions",t:0,op:">="},{id:"pressures",label:"Press",t:5,op:">="}],team:[{id:"total",label:"Sekvenser",t:30,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:30,op:">="}]},
-  WB:{player:[{id:"total",label:"Aksjoner",t:30,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:8,op:">="},{id:"v1",label:"1v1 dueller",t:5,op:">="},{id:"duel_def",label:"Def. dueller",t:3,op:">="},{id:"counterattack",label:"Kontringsinitiativ",t:1,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:0.5,op:">="},{id:"key_passes",label:"Nøkkelpasn.",t:1,op:">="},{id:"dribbles",label:"Driblinger",t:1,op:">="},{id:"tackles",label:"Taklinger",t:2,op:">="}],team:[{id:"total",label:"Sekvenser",t:30,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:40,op:">="}]},
-  CM:{player:[{id:"total",label:"Aksjoner",t:50,op:">="},{id:"efficiency",label:"Effektivitet",t:0,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:18,op:">="},{id:"v1",label:"1v1 dueller",t:8,op:">="},{id:"duel_press",label:"Press-dueller",t:3,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:0.8,op:">="},{id:"key_passes",label:"Nøkkelpasn.",t:2,op:">="},{id:"pressures",label:"Press",t:10,op:">="},{id:"tackles",label:"Taklinger",t:3,op:">="},{id:"pass_pct",label:"Pasning%",t:80,op:">="}],team:[{id:"total",label:"Sekvenser",t:40,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:50,op:">="}]},
-  AM:{player:[{id:"total",label:"Aksjoner",t:40,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:15,op:">="},{id:"shot",label:"Avslutninger",t:1,op:">="},{id:"v1",label:"1v1 dueller",t:10,op:">="},{id:"counterattack",label:"Kontringsinitiativ",t:1,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:1.0,op:">="},{id:"shots",label:"Avslutninger",t:2,op:">="},{id:"key_passes",label:"Nøkkelpasn.",t:2,op:">="},{id:"xG_player",label:"xG",t:0.3,op:">="}],team:[{id:"total",label:"Sekvenser",t:35,op:">="},{id:"shot",label:"Avslut-seq",t:3,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:55,op:">="}]},
-  FW:{player:[{id:"shot",label:"Avslutninger",t:3,op:">="},{id:"v1",label:"1v1 dueller",t:8,op:">="},{id:"efficiency",label:"Effektivitet",t:-3,op:">="},{id:"counterattack",label:"Kontringsinitiativ",t:1,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:5,op:">="}],pdf:[{id:"shots",label:"Avslutninger",t:3,op:">="},{id:"xG_player",label:"xG",t:0.5,op:">="},{id:"xGChain",label:"xGChain",t:1.0,op:">="},{id:"dribbles",label:"Driblinger",t:2,op:">="}],team:[{id:"total",label:"Sekvenser",t:25,op:">="},{id:"shot",label:"Avslut-seq",t:4,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:60,op:">="}]},
+  GK:{
+    player:[
+      {id:"total",      label:"Totale aksjoner",           t:50,  op:">=",info:"Aktivitetsnivå i spillet"},
+      {id:"efficiency", label:"Eff. (+/−)",                 t:0,   op:">=",info:"Netto positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasn. (skapefasen)",  t:8,   op:">=",info:"Initierer angrep fra bakrom"},
+      {id:"gk_save",    label:"Redninger",                  t:0,   op:">=",info:"Holder nullen"},
+      {id:"clearances", label:"Klaringer (sikring)",        t:1,   op:">=",info:"Rydder farligheter"},
+    ],
+    pdf:[
+      {id:"xGChain",    label:"xGChain",                   t:0.5, op:">=",info:"Deltar i lagets angrepssekvenser"},
+      {id:"pass_pct",   label:"Pasningsprosent %",          t:70,  op:">=",info:"Trygg ball ut fra keeper"},
+      {id:"clearances", label:"Klaringer",                  t:1,   op:">=",info:"Sikring av eget felt"},
+    ],
+    team:[{id:"total",label:"Sekvenser totalt",t:40,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:10,op:">="}],
+  },
+  CB:{
+    player:[
+      {id:"total",      label:"Totale aksjoner",           t:40,  op:">=",info:"Involvert i lagets spill"},
+      {id:"efficiency", label:"Eff. (+/−)",                 t:0,   op:">=",info:"Netto positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasn. (bygger opp)", t:15,  op:">=",info:"Starter angrepsspill"},
+      {id:"duel_def",   label:"Def. dueller vunnet",       t:5,   op:">=",info:"Vinner dueller — linjekontroll"},
+      {id:"clearances", label:"Klaringer",                  t:2,   op:">=",info:"Rydder farligheter"},
+    ],
+    pdf:[
+      {id:"xGChain",      label:"xGChain",                 t:0.5, op:">=",info:"Bidrar i angrepskjeder"},
+      {id:"tackles",      label:"Taklinger vunnet",        t:2,   op:">=",info:"Vinner dueller"},
+      {id:"interceptions",label:"Interceptions",           t:1,   op:">=",info:"Leser spillet, bryter linjer"},
+      {id:"clearances",   label:"Klaringer",               t:2,   op:">=",info:"Rydder farligheter"},
+      {id:"pass_pct",     label:"Pasningsprosent %",       t:82,  op:">=",info:"Trygg ballsirkulering bak"},
+    ],
+    team:[{id:"total",label:"Sekvenser",t:30,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:30,op:">="}],
+  },
+  WB:{
+    player:[
+      {id:"total",        label:"Totale aksjoner",         t:30,  op:">=",info:"Aktiv i begge faser"},
+      {id:"smart_pass",   label:"Smarte pasn. (innlegg)",  t:8,   op:">=",info:"Innlegg og kombinasjoner"},
+      {id:"v1",           label:"1v1 dueller (slår fri)",  t:5,   op:">=",info:"Kombinerer seg forbi"},
+      {id:"duel_def",     label:"Def. dueller vunnet",     t:3,   op:">=",info:"Forsvarsbidrag på kant"},
+      {id:"counterattack",label:"Kontringsinitiativ",      t:1,   op:">=",info:"Trigger raske overganger"},
+    ],
+    pdf:[
+      {id:"xGChain",    label:"xGChain",                   t:0.6, op:">=",info:"Involvert i angrepskjeder"},
+      {id:"key_passes", label:"Nøkkelpasn. / innlegg",     t:1,   op:">=",info:"Skaper sjanser fra kant"},
+      {id:"dribbles",   label:"Vellykkede driblinger",     t:1,   op:">=",info:"Slår seg forbi kant"},
+      {id:"tackles",    label:"Taklinger vunnet",          t:2,   op:">=",info:"Defensivt bidrag"},
+    ],
+    team:[{id:"total",label:"Sekvenser",t:30,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:40,op:">="}],
+  },
+  CM:{
+    player:[
+      {id:"total",      label:"Totale aksjoner",             t:50,  op:">=",info:"Hjerte i lagets spill"},
+      {id:"efficiency", label:"Eff. (+/−)",                   t:0,   op:">=",info:"Positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasn. (forbindelsesledd)",t:18,op:">=",info:"Kobler bakrom til front"},
+      {id:"v1",         label:"1v1 dueller (Ping-Pong)",      t:8,   op:">=",info:"Ping-Pong press + lokke"},
+      {id:"duel_press", label:"Press-dueller",                t:3,   op:">=",info:"Presser kontrollert"},
+    ],
+    pdf:[
+      {id:"xGChain",    label:"xGChain",                     t:0.8, op:">=",info:"Sentralt i angrepskjeder"},
+      {id:"key_passes", label:"Nøkkelpasn.",                  t:2,   op:">=",info:"Direkte sjansskapning"},
+      {id:"pressures",  label:"Press-aksjoner",               t:10,  op:">=",info:"Høyt og aktivt press"},
+      {id:"tackles",    label:"Taklinger vunnet",             t:3,   op:">=",info:"Vinner ballen tilbake"},
+      {id:"pass_pct",   label:"Pasningsprosent %",            t:80,  op:">=",info:"Sirkulerer trygt og raskt"},
+    ],
+    team:[{id:"total",label:"Sekvenser",t:40,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:50,op:">="}],
+  },
+  AM:{
+    player:[
+      {id:"total",        label:"Totale aksjoner",           t:40,  op:">=",info:"Aktiv i skapefasen"},
+      {id:"smart_pass",   label:"Smarte pasn. (veggspill)",  t:15,  op:">=",info:"Kombinerer seg inn i rom"},
+      {id:"shot",         label:"Avslutninger",              t:1,   op:">=",info:"Trekker til avslutning"},
+      {id:"v1",           label:"1v1 dueller (slår seg fri)",t:10,  op:">=",info:"Dribbler fra kant/halvrom"},
+      {id:"counterattack",label:"Kontringsinitiativ",        t:1,   op:">=",info:"Trigger raske overganger"},
+    ],
+    pdf:[
+      {id:"xGChain",    label:"xGChain",                     t:1.0, op:">=",info:"Høy involvering i sjanseskaping"},
+      {id:"shots",      label:"Avslutninger",                t:2,   op:">=",info:"Trekker til avslutning"},
+      {id:"key_passes", label:"Nøkkelpasn.",                  t:2,   op:">=",info:"Siste pasning før avslutning"},
+      {id:"xG_player",  label:"xG (skuddsjanser)",           t:0.3, op:">=",info:"Havner i gode skuddposisjoner"},
+    ],
+    team:[{id:"total",label:"Sekvenser",t:35,op:">="},{id:"shot",label:"Avslut-seq",t:3,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:55,op:">="}],
+  },
+  FW:{
+    player:[
+      {id:"shot",         label:"Avslutninger (angriper bak)",t:3,  op:">=",info:"Angriper bakrom og avslutter"},
+      {id:"v1",           label:"1v1 dueller (slår CB)",      t:8,  op:">=",info:"Holder på ball under press"},
+      {id:"efficiency",   label:"Eff. (+/−)",                 t:-3, op:">=",info:"Ikke under −3 (presser gevinst)"},
+      {id:"counterattack",label:"Kontringsinitiativ",         t:1,  op:">=",info:"Trigger kontring med løp"},
+      {id:"smart_pass",   label:"Smarte pasn. (avlastning)",  t:5,  op:">=",info:"Avlaster under press"},
+    ],
+    pdf:[
+      {id:"shots",      label:"Avslutninger",                 t:3,  op:">=",info:"Angriper bak og avslutter"},
+      {id:"xG_player",  label:"xG",                          t:0.5,op:">=",info:"Havner i høykvalitetssjanser"},
+      {id:"xGChain",    label:"xGChain",                      t:1.0,op:">=",info:"Sentral i lagets angrepsspill"},
+      {id:"dribbles",   label:"Vellykkede driblinger",        t:1,  op:">=",info:"Slår seg forbi forsvarere"},
+    ],
+    team:[{id:"total",label:"Sekvenser",t:25,op:">="},{id:"shot",label:"Avslut-seq",t:4,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:60,op:">="}],
+  },
   SUB:{player:[],pdf:[],team:[]},
 };
 
@@ -223,34 +322,124 @@ const TEAM_KPIS=[
   {id:"off",label:"Offensiv & angrepsvilling",items:[{id:"xG",label:"xG",t:2,op:">=",src:["pdf"]},{id:"maal",label:"Scorede mål",t:2,op:">=",src:["pdf","team","player"]},{id:"dribbSuksess",label:"Suksess % driblinger",t:60,op:">",unit:"%",src:["pdf"]},{id:"createdChances",label:"Skapte sjanser",t:10,op:">=",src:["player"]},{id:"highTransP",label:"Høye overganger %",t:8,op:">",unit:"%",src:["team"]}]},
   {id:"omst",label:"Omstillinger",items:[{id:"highTrans",label:"Høye overganger",t:5,op:">=",src:["team"]},{id:"counterAttForward",label:"Kontrings-aksjoner",t:3,op:">=",src:["player"]},{id:"maalOffTrans",label:"Mål off. overganger",t:1,op:">",manual:true,src:["pdf","team","player"]}]},
   {id:"fors",label:"Forsvarsspill",items:[{id:"oppShots",label:"Avslutninger imot",t:10,op:"<",src:["pdf","team","player"]},{id:"xGa",label:"xGa",t:1,op:"<",src:["pdf"]},{id:"oppGoals",label:"Innslupne mål",t:1,op:"<",src:["pdf","team","player"]},{id:"pressureRegains",label:"Press-gjenvindinger",t:40,op:">=",src:["pdf"]},{id:"maalDefTrans",label:"Mål def. overganger",t:1,op:"<",manual:true,src:["pdf","team","player"]}]},
-  {id:"dod",label:"Dødball",items:[{id:"dodPlusMinus",label:"+/− dødball",t:1,op:">",src:["pdf"]},{id:"oppCorners",label:"Motst. hjørnespark",t:4,op:"<",src:["team","player","pdf"]},{id:"oppSetPieces",label:"Motst. dødball",t:23,op:"<",src:["team","player"]}]},
+  {id:"dod",label:"Dødball",items:[{id:"dodPlusMinus",label:"+/− dødball (mål)",t:1,op:">",src:["pdf"]},{id:"avslutningerDP",label:"Egne dødball-skudd",t:2,op:">",src:["pdf"],manual:true},{id:"oppCorners",label:"Motst. hjørnespark",t:4,op:"<",src:["team","player","pdf"]},{id:"oppSetPieces",label:"Motst. dødball totalt",t:23,op:"<",src:["team","player"]},{id:"oppSPShots",label:"Motst. dødball-skudd",t:2,op:"<",src:["pdf"],manual:true}]},
 ];
 
 /* ── PDF Parser (Gemini) ─────────────────────────────────────────── */
-const PDF_PROMPT=`Extract all data from this StatsBomb football match report PDF. Return ONLY valid JSON, no markdown.\n\nSchema:\n{"match":{"home_team":string,"away_team":string,"home_score":number,"away_score":number,"date":string,"competition":string},"team_stats":{"home":{"possession":number,"xG":number,"shots":number,"pass_completion":number,"total_passes":number,"pressures":number,"pressure_regains":number,"tackles_won":number},"away":{"possession":number,"xG":number,"shots":number,"pass_completion":number,"total_passes":number,"pressures":number,"pressure_regains":number,"tackles_won":number}},"home_players":[{"name":string,"jersey":number,"shots":number,"goals":number,"xG":number,"key_passes":number,"assists":number,"xGChain":number,"xG_buildup":number,"pressures":number,"tackles_won":number,"interceptions":number,"clearances":number,"dribbles":number,"dispossessions":number,"passes_into_box":number,"final_third_passes":number,"pass_pct":number,"touches_in_box":number}],"away_players":[same structure]}\n\nUse null for missing. Extract every player from appendix stats tables.`;
+const PDF_PROMPT=`Extract ALL data from this StatsBomb football match report PDF. Return ONLY valid JSON, no markdown, no explanation.
+
+Schema:
+{
+  "match":{"home_team":string,"away_team":string,"home_score":number,"away_score":number,"date":string,"competition":string,"venue":string},
+  "team_stats":{
+    "home":{"possession":number,"xG":number,"shots":number,"shots_on_target":number,"pass_completion":number,"total_passes":number,"pressures":number,"pressure_regains":number,"tackles_won":number,"tackle_attempts":number,"corners":number,"set_pieces":number,"set_piece_goals":number,"yellow_cards":number},
+    "away":{"possession":number,"xG":number,"shots":number,"shots_on_target":number,"pass_completion":number,"total_passes":number,"pressures":number,"pressure_regains":number,"tackles_won":number,"tackle_attempts":number,"corners":number,"set_pieces":number,"set_piece_goals":number,"yellow_cards":number}
+  },
+  "home_players":[{
+    "name":string,"jersey":number,
+    "shots":number,"goals":number,"xG":number,"xG_per_shot":number,
+    "key_passes":number,"assists":number,"xG_assisted":number,
+    "xGChain":number,"xG_buildup":number,
+    "pressures":number,"pressure_regains":number,
+    "tackles_won":number,"tackle_attempts":number,
+    "interceptions":number,"clearances":number,
+    "dribbles":number,"dispossessions":number,
+    "through_balls":number,"passes_into_box":number,
+    "final_third_passes":number,"pass_pct":number,
+    "touches_in_box":number,"long_balls":number,"long_ball_pct":number
+  }],
+  "away_players":[same structure as home_players]
+}
+
+CRITICAL: Extract EVERY player listed in the appendix stats tables (Shots and Key-Passes, Passing and Touches, Defensive Actions). Use null for any value not found in the PDF. Do NOT fabricate data.`; 
 
 async function parsePDFWithAI(file){
   const key=getGeminiKey();
   if(!key||key==='__skip__'||key.length<10) throw new Error("Ingen Gemini API-nøkkel. Klikk ⚙ øverst til høyre for å sette den opp.");
   const base64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.onerror=()=>rej(new Error("Lesefeil"));r.readAsDataURL(file);});
-  const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
-  const resp=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:"application/pdf",data:base64}},{text:PDF_PROMPT}]}],generationConfig:{temperature:0,maxOutputTokens:4000}})});
-  if(!resp.ok){const e=await resp.json().catch(()=>({}));throw new Error(`Gemini feil ${resp.status}: ${e?.error?.message||"Sjekk nøkkelen i ⚙ innstillinger"}`);}
-  const data=await resp.json();
-  const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||"{}";
-  return buildFromPDF(JSON.parse(raw.replace(/```json|```/g,"").trim()),file.name);
+  const MODELS=["gemini-2.0-flash","gemini-1.5-flash-latest","gemini-1.5-flash-001","gemini-1.5-pro-latest"];
+  let lastErr="";
+  for(const model of MODELS){
+    const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+    try{
+      const resp=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:"application/pdf",data:base64}},{text:PDF_PROMPT}]}],generationConfig:{temperature:0,maxOutputTokens:4096}})});
+      if(resp.ok){
+        const data=await resp.json();
+        const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||"{}";
+        const clean=raw.replace(/```json[\s\S]*?```|```/g,"").trim();
+        return buildFromPDF(JSON.parse(clean),file.name);
+      }
+      const e=await resp.json().catch(()=>({}));
+      lastErr=e?.error?.message||`HTTP ${resp.status}`;
+      if(resp.status===400||resp.status===403)break;
+    }catch(fetchErr){lastErr=fetchErr.message;}
+  }
+  throw new Error(`Gemini feil: ${lastErr} — Sjekk nøkkelen i Innstillinger (⚙)`);
 }
 
 function buildFromPDF(d,filename){
   const m=d.match||{};const hs=d.team_stats?.home||{};const as=d.team_stats?.away||{};
+  // Identify Stabæk side — home or away
   const hIS=(m.home_team||"").toLowerCase().includes("stab");
   const stab=hIS?hs:as;const opp=hIS?as:hs;
   const sS=hIS?m.home_score:m.away_score;const oS=hIS?m.away_score:m.home_score;
   const stabP=hIS?(d.home_players||[]):(d.away_players||[]);
-  const tD=stabP.reduce((s,p)=>s+(p.dribbles||0),0);const tDi=stabP.reduce((s,p)=>s+(p.dispossessions||0),0);
-  const players=stabP.map(p=>{const j=p.jersey||null;return{name:p.name,jersey:j,isStabek:true,pos:j?(DEFAULT_POS[j]||"SUB"):"CM",shots:p.shots??null,goals:p.goals??null,xG_player:p.xG??null,key_passes:p.key_passes??null,assists:p.assists??null,xGChain:p.xGChain??null,xG_buildup:p.xG_buildup??null,pressures:p.pressures??null,tackles:p.tackles_won??null,interceptions:p.interceptions??null,clearances:p.clearances??null,dribbles:p.dribbles??null,passes_into_box:p.passes_into_box??null,final_third_passes:p.final_third_passes??null,pass_pct:p.pass_pct??null,touches_in_box:p.touches_in_box??null,shot:p.shots??null,v1:p.dribbles??null,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null};});
+  const oppP=hIS?(d.away_players||[]):(d.home_players||[]);
+  // Dribbling success % — dribbles/(dribbles+dispossessions)
+  const tD=stabP.reduce((s,p)=>s+(p.dribbles||0),0);
+  const tDi=stabP.reduce((s,p)=>s+(p.dispossessions||0),0);
+  const dribbSuksess=(tD+tDi)>0?Math.round(tD/(tD+tDi)*100):null;
+  // touches in box for team total
+  const touchBoks=stabP.reduce((s,p)=>s+(p.touches_in_box||0),0)||null;
+  // corners & set pieces from opponent players (not available in basic schema — use team_stats if present)
+  const oppCorners=opp.corners??null;
+  const oppSetPieces=opp.set_pieces??null;
+  // +/- dødball: set_piece_goals_for - set_piece_goals_against
+  const spGF=stab.set_piece_goals??null;const spGA=opp.set_piece_goals??null;
+  const dodPlusMinus=(spGF!==null&&spGA!==null)?(spGF-spGA):null;
+  // pressure_regains
+  const pressureRegains=stab.pressure_regains??null;
+  const players=stabP.map(p=>{
+    const j=p.jersey||null;
+    return{
+      name:p.name,jersey:j,isStabek:true,
+      pos:j?(DEFAULT_POS[j]||"SUB"):"CM",
+      shots:p.shots??null,goals:p.goals??null,
+      xG_player:p.xG??null,xG_per_shot:p.xG_per_shot??null,
+      key_passes:p.key_passes??null,assists:p.assists??null,
+      xGChain:p.xGChain??null,xG_buildup:p.xG_buildup??null,
+      pressures:p.pressures??null,tackles:p.tackles_won??null,
+      tackle_attempts:p.tackle_attempts??null,
+      interceptions:p.interceptions??null,clearances:p.clearances??null,
+      dribbles:p.dribbles??null,dispossessions:p.dispossessions??null,
+      passes_into_box:p.passes_into_box??null,
+      final_third_passes:p.final_third_passes??null,
+      pass_pct:p.pass_pct??null,touches_in_box:p.touches_in_box??null,
+      // Unified aliases for role KPIs
+      shot:p.shots??null,v1:p.dribbles??null,
+      efficiency:null,smart_pass:null,duel_def:null,duel_press:null,
+      counterattack:null,gk_save:null,total:null,
+      finalThird:null,finalThirdP:null,highTrans:null,
+    };
+  });
   const dm=(m.date||filename).match(/\d{4}-\d{2}-\d{2}/);
-  return{id:Date.now()+"",filename:`${m.home_team||"Stabæk"} vs ${m.away_team||"Motstander"}`,date:dm?dm[0]:(m.date||"?"),competition:m.competition||"Ukjent",scoreFor:sS||0,scoreAgainst:oS||0,source:"pdf",possession:stab.possession??null,pasningar:stab.total_passes??null,avslutninger:stab.shots??null,touchBoks:null,passComp:stab.pass_completion??null,xG:stab.xG??null,maal:sS??0,dribbSuksess:(tD+tDi)>0?Math.round(tD/(tD+tDi)*100):null,highTrans:null,highTransP:null,createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",oppShots:opp.shots??null,xGa:opp.xG??null,oppGoals:oS??0,oppAttacks:null,pressureRegains:stab.pressure_regains??null,dodPlusMinus:null,oppCorners:null,oppSetPieces:null,players};
+  const stabTeam=hIS?m.home_team:m.away_team;
+  const oppTeam=hIS?m.away_team:m.home_team;
+  return{
+    id:Date.now()+"",
+    filename:`${stabTeam||"Stabæk"} vs ${oppTeam||"Motstander"}`,
+    stabTeam:stabTeam||"Stabæk",oppTeam:oppTeam||"Motstander",
+    date:dm?dm[0]:(m.date||"?"),competition:m.competition||"Ukjent",
+    scoreFor:sS||0,scoreAgainst:oS||0,source:"pdf",
+    possession:stab.possession??null,pasningar:stab.total_passes??null,
+    avslutninger:stab.shots??null,touchBoks,passComp:stab.pass_completion??null,
+    xG:stab.xG??null,maal:sS??0,dribbSuksess,
+    highTrans:null,highTransP:null,createdChances:null,counterAttForward:null,
+    maalOffTrans:"",maalDefTrans:"",
+    oppShots:opp.shots??null,xGa:opp.xG??null,oppGoals:oS??0,oppAttacks:null,
+    pressureRegains,dodPlusMinus,oppCorners,oppSetPieces,
+    players,
+  };
 }
 
 /* ── XML Parsers ─────────────────────────────────────────────────── */
@@ -263,7 +452,7 @@ function parseTeamXML(xml,fn){
   bip.forEach(inst=>{const l=getLbls(inst);const eT=l["03 - End location third"]||[];const tr=l["08 - Transition"]||[];const ou=l["07 - Outcome"]||[];const pl=l["10 - Players"]||[];if(eT.includes("Final third"))ft++;if(tr.includes("High"))ht++;if(ou.some(o=>["Shot","Shot on goal","Goal"].includes(o)))bs++;pl.forEach(p=>{if(!pd[p])pd[p]={total:0,finalThird:0,highTrans:0,shot:0};pd[p].total++;if(eT.includes("Final third"))pd[p].finalThird++;if(tr.includes("High"))pd[p].highTrans++;if(ou.some(o=>["Shot","Shot on goal","Goal"].includes(o)))pd[p].shot++;});});
   const sm=fn.match(/(\d)-(\d)/),dm=fn.match(/\d{4}-\d{2}-\d{2}/);const sF=sm?parseInt(sm[2]):oppGo.length,sA=sm?parseInt(sm[1]):0;
   const players=Object.entries(pd).map(([name,s])=>{const jm=name.match(/^(\d+)\./);const j=jm?parseInt(jm[1]):0;return{name,jersey:j,isStabek:isStabek(name),pos:DEFAULT_POS[j]||"SUB",...s,finalThirdP:s.total?Math.round(s.finalThird/s.total*100):0,efficiency:null,smart_pass:null,xGChain:null,xG_player:null,key_passes:null,shots:null,tackles:null,clearances:null,dribbles:null,pressures:null,v1:null};});
-  return{id:Date.now()+"",filename:fn.replace(/__.*$/,"").replace(/_/g," ").trim().slice(0,50),date:dm?dm[0]:"?",competition:"OBOS Nasjonal",scoreFor:sF,scoreAgainst:sA,source:"team",possession:total?Math.round(stabPoss/total*100):0,pasningar:null,avslutninger:Math.max(0,bs-oppSh.length),touchBoks:null,passComp:null,xG:null,maal:sF,highTrans:ht,highTransP:total?Math.round(ht/total*100):0,finalThird:ft,finalThirdP:total?Math.round(ft/total*100):0,createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",oppShots:oppSh.length,xGa:null,oppGoals:sA,oppAttacks:oppA.length,pressureRegains:null,dodPlusMinus:null,oppCorners:oppCo.length,oppSetPieces:oppSt.length,players};
+  return{id:Date.now()+"",filename:fn.replace(/__.*$/,"").replace(/_/g," ").replace(/\d{4}-\d{2}-\d{2}/,"").replace(/_{2,}/g," ").trim().replace(/^[\s_-]+|[\s_-]+$/g,"").slice(0,50),date:dm?dm[0]:"?",competition:"OBOS Nasjonal",scoreFor:sF,scoreAgainst:sA,source:"team",possession:total?Math.round(stabPoss/total*100):0,pasningar:null,avslutninger:Math.max(0,bs-oppSh.length),touchBoks:null,passComp:null,xG:null,maal:sF,highTrans:ht,highTransP:total?Math.round(ht/total*100):0,finalThird:ft,finalThirdP:total?Math.round(ft/total*100):0,createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",oppShots:oppSh.length,xGa:null,oppGoals:sA,oppAttacks:oppA.length,pressureRegains:null,dodPlusMinus:null,oppCorners:oppCo.length,oppSetPieces:oppSt.length,players};
 }
 
 function parsePlayerXML(xml,fn){
@@ -289,7 +478,40 @@ async function parseFile(file){
 }
 
 /* ── Demo ────────────────────────────────────────────────────────── */
-const DEMOS=[{id:"d1",filename:"Stabæk U15 vs Sogndal U15",date:"2026-05-03",competition:"OBOS Nasjonal G15 2026",scoreFor:5,scoreAgainst:0,source:"pdf",possession:64,pasningar:629,avslutninger:38,touchBoks:68,passComp:82,xG:5.93,maal:5,dribbSuksess:null,highTrans:null,highTransP:null,createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",oppShots:7,xGa:0.19,oppGoals:0,oppAttacks:null,pressureRegains:57,dodPlusMinus:null,oppCorners:null,oppSetPieces:null,players:[{name:"Max Hammerich",jersey:9,isStabek:true,pos:"FW",shots:9,goals:2,xG_player:2.64,key_passes:1,assists:0,xGChain:2.76,pressures:26,tackles:2,interceptions:0,clearances:0,dribbles:0,pass_pct:75,touches_in_box:11,shot:9,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Oliver Lerdrup",jersey:7,isStabek:true,pos:"AM",shots:8,goals:2,xG_player:1.71,key_passes:5,assists:1,xGChain:3.82,pressures:20,tackles:3,interceptions:0,clearances:2,dribbles:0,pass_pct:75,touches_in_box:14,shot:8,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Ludvig Slæperud",jersey:10,isStabek:true,pos:"CM",shots:4,goals:0,xG_player:0.13,key_passes:10,assists:2,xGChain:2.88,pressures:16,tackles:4,interceptions:1,clearances:0,dribbles:0,pass_pct:77,touches_in_box:2,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Nicolas Da Rocha",jersey:99,isStabek:true,pos:"GK",shots:0,goals:0,xG_player:0,key_passes:0,assists:0,xGChain:0.83,pressures:0,tackles:0,interceptions:0,clearances:0,dribbles:0,pass_pct:86,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null}]},{id:"d2",filename:"Stabæk U19 vs Odds U19",date:"2026-03-22",competition:"OBOS Nasjonal U19",scoreFor:2,scoreAgainst:1,source:"player",possession:38,pasningar:null,avslutninger:14,touchBoks:null,passComp:null,xG:null,maal:2,dribbSuksess:null,highTrans:null,highTransP:null,createdChances:15,counterAttForward:7,maalOffTrans:"",maalDefTrans:"",oppShots:16,xGa:null,oppGoals:1,oppAttacks:null,pressureRegains:null,dodPlusMinus:null,oppCorners:8,oppSetPieces:11,players:[{name:"(1) H. Sørlie",jersey:1,isStabek:true,pos:"GK",total:82,plus:4,minus:0,efficiency:4,smart_pass:12,duel_def:0,duel_press:0,shot:0,v1:0,counterattack:0,assists:0,clearances:2,gk_save:1,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:0,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"(15) C. Bachke",jersey:15,isStabek:true,pos:"FW",total:58,plus:9,minus:12,efficiency:-3,smart_pass:11,duel_def:3,duel_press:0,shot:4,v1:24,counterattack:2,assists:0,clearances:0,gk_save:0,shots:4,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:24,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"(9) M. Kjos",jersey:9,isStabek:true,pos:"FW",total:48,plus:5,minus:6,efficiency:-1,smart_pass:11,duel_def:1,duel_press:0,shot:6,v1:13,counterattack:1,assists:0,clearances:3,gk_save:0,shots:6,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:13,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null}]}];
+const DEMOS=[
+  {
+    id:"d1",filename:"Stabæk U15 vs Sogndal U15",stabTeam:"Stabæk U15",oppTeam:"Sogndal U15",
+    date:"2026-05-03",competition:"OBOS Nasjonal G15 2026",scoreFor:5,scoreAgainst:0,
+    source:"pdf",possession:64,pasningar:629,avslutninger:38,touchBoks:68,passComp:82,
+    xG:5.93,maal:5,dribbSuksess:41,highTrans:null,highTransP:null,
+    createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",
+    oppShots:7,xGa:0.19,oppGoals:0,oppAttacks:null,pressureRegains:57,
+    dodPlusMinus:1,oppCorners:3,oppSetPieces:5,
+    players:[{name:"Max Hammerich",jersey:9,isStabek:true,pos:"FW",shots:9,goals:2,xG_player:2.64,key_passes:1,assists:0,xGChain:2.76,xG_buildup:0.8,pressures:26,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:1,final_third_passes:15,pass_pct:75,touches_in_box:11,shot:9,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Oliver Lerdrup",jersey:7,isStabek:true,pos:"AM",shots:8,goals:2,xG_player:1.71,key_passes:5,assists:1,xGChain:3.82,xG_buildup:1.03,pressures:20,tackles:3,interceptions:0,clearances:2,dribbles:0,dispossessions:0,passes_into_box:2,final_third_passes:20,pass_pct:75,touches_in_box:14,shot:8,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Ludvig Slæperud",jersey:10,isStabek:true,pos:"CM",shots:4,goals:0,xG_player:0.13,key_passes:10,assists:2,xGChain:2.88,xG_buildup:1.98,pressures:16,tackles:4,interceptions:1,clearances:0,dribbles:0,dispossessions:0,passes_into_box:9,final_third_passes:45,pass_pct:77,touches_in_box:2,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Carl-Alexander Forsström",jersey:3,isStabek:true,pos:"CB",shots:4,goals:0,xG_player:0.26,key_passes:1,assists:0,xGChain:2.6,xG_buildup:2.31,pressures:5,tackles:3,interceptions:1,clearances:2,dribbles:4,dispossessions:0,passes_into_box:2,final_third_passes:20,pass_pct:82,touches_in_box:7,shot:4,v1:4,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Frantz Johannessen",jersey:50,isStabek:true,pos:"WB",shots:2,goals:0,xG_player:0.25,key_passes:5,assists:0,xGChain:1.63,xG_buildup:1.4,pressures:19,tackles:3,interceptions:0,clearances:0,dribbles:1,dispossessions:1,passes_into_box:3,final_third_passes:25,pass_pct:79,touches_in_box:5,shot:2,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Steinar Wangen",jersey:11,isStabek:true,pos:"WB",shots:4,goals:0,xG_player:0.24,key_passes:2,assists:0,xGChain:0.69,xG_buildup:0.3,pressures:8,tackles:1,interceptions:0,clearances:3,dribbles:3,dispossessions:4,passes_into_box:4,final_third_passes:18,pass_pct:64,touches_in_box:3,shot:4,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Edvard Bull-Rostrup",jersey:2,isStabek:true,pos:"CB",shots:2,goals:0,xG_player:0.34,key_passes:0,assists:0,xGChain:0.95,xG_buildup:0.48,pressures:8,tackles:5,interceptions:0,clearances:2,dribbles:3,dispossessions:3,passes_into_box:0,final_third_passes:24,pass_pct:91,touches_in_box:6,shot:2,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Aksel Willand-Grønli",jersey:14,isStabek:true,pos:"CB",shots:1,goals:0,xG_player:0.11,key_passes:0,assists:0,xGChain:1.22,xG_buildup:1.11,pressures:5,tackles:3,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:26,pass_pct:86,touches_in_box:2,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"August Kirkenær",jersey:4,isStabek:true,pos:"WB",shots:0,goals:0,xG_player:0.0,key_passes:2,assists:0,xGChain:0.77,xG_buildup:0.77,pressures:7,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:15,pass_pct:89,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Nicolas Da Rocha",jersey:99,isStabek:true,pos:"GK",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.83,xG_buildup:0.83,pressures:0,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:0,pass_pct:86,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Jacob Wallace",jersey:8,isStabek:true,pos:"CM",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:1.16,xG_buildup:1.16,pressures:11,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:0,final_third_passes:6,pass_pct:88,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"William Neiden",jersey:6,isStabek:true,pos:"CM",shots:2,goals:0,xG_player:0.16,key_passes:0,assists:0,xGChain:0.93,xG_buildup:0.77,pressures:4,tackles:2,interceptions:0,clearances:1,dribbles:2,dispossessions:3,passes_into_box:2,final_third_passes:8,pass_pct:77,touches_in_box:4,shot:2,v1:2,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Markus Skjellvik",jersey:19,isStabek:true,pos:"FW",shots:1,goals:0,xG_player:0.03,key_passes:1,assists:0,xGChain:0.29,xG_buildup:0.16,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:1,final_third_passes:5,pass_pct:89,touches_in_box:1,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Sondre Omland",jersey:18,isStabek:true,pos:"CB",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:1.13,xG_buildup:1.13,pressures:0,tackles:1,interceptions:0,clearances:3,dribbles:1,dispossessions:1,passes_into_box:0,final_third_passes:0,pass_pct:90,touches_in_box:0,shot:0,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Nicolai Hageland",jersey:21,isStabek:true,pos:"CM",shots:1,goals:0,xG_player:0.05,key_passes:0,assists:0,xGChain:0.45,xG_buildup:0.4,pressures:2,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:2,final_third_passes:2,pass_pct:100,touches_in_box:0,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Altin Kocani",jersey:27,isStabek:true,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.15,xG_buildup:0.15,pressures:2,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:1,pass_pct:38,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null}]
+  },
+  {
+    id:"d2",filename:"Stabæk U19 vs Odds U19",stabTeam:"Stabæk U19",oppTeam:"Odds U19",
+    date:"2026-03-22",competition:"OBOS Nasjonal U19",scoreFor:2,scoreAgainst:1,
+    source:"player",possession:38,pasningar:null,avslutninger:14,touchBoks:null,passComp:null,
+    xG:null,maal:2,dribbSuksess:null,highTrans:null,highTransP:null,
+    createdChances:15,counterAttForward:7,maalOffTrans:"",maalDefTrans:"",
+    oppShots:16,xGa:null,oppGoals:1,oppAttacks:null,pressureRegains:null,
+    dodPlusMinus:null,oppCorners:8,oppSetPieces:11,
+    players:[
+      {name:"(1) H. Sørlie",jersey:1,isStabek:true,pos:"GK",total:82,plus:4,minus:0,efficiency:4,smart_pass:12,duel_def:0,duel_press:0,shot:0,v1:0,counterattack:0,assists:0,clearances:2,gk_save:1,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:0,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(3) E. Varvin-Kvamme",jersey:3,isStabek:true,pos:"CB",total:66,plus:9,minus:6,efficiency:3,smart_pass:29,duel_def:7,duel_press:0,shot:0,v1:17,counterattack:1,assists:0,clearances:1,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:17,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(22) E. Riis-Eriksen",jersey:22,isStabek:true,pos:"CM",total:89,plus:3,minus:10,efficiency:-7,smart_pass:50,duel_def:8,duel_press:0,shot:0,v1:12,counterattack:0,assists:0,clearances:1,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:12,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(25) P. Hanche-Olsen",jersey:25,isStabek:true,pos:"CM",total:81,plus:5,minus:4,efficiency:1,smart_pass:31,duel_def:2,duel_press:0,shot:0,v1:9,counterattack:0,assists:0,clearances:4,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:9,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(18) O. Essayas",jersey:18,isStabek:true,pos:"AM",total:72,plus:9,minus:6,efficiency:3,smart_pass:43,duel_def:10,duel_press:0,shot:1,v1:18,counterattack:0,assists:0,clearances:4,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:18,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(20) L. Riis-Eriksen",jersey:20,isStabek:true,pos:"WB",total:62,plus:9,minus:10,efficiency:-1,smart_pass:22,duel_def:11,duel_press:0,shot:1,v1:19,counterattack:0,assists:0,clearances:2,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:19,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(16) S. Velten-Simonsen",jersey:16,isStabek:true,pos:"WB",total:61,plus:5,minus:7,efficiency:-2,smart_pass:21,duel_def:6,duel_press:0,shot:1,v1:23,counterattack:1,assists:0,clearances:0,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:23,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(10) S. Osman",jersey:10,isStabek:true,pos:"AM",total:60,plus:6,minus:4,efficiency:2,smart_pass:23,duel_def:5,duel_press:0,shot:1,v1:14,counterattack:2,assists:0,clearances:1,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:14,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(15) C. Bachke",jersey:15,isStabek:true,pos:"FW",total:58,plus:9,minus:12,efficiency:-3,smart_pass:11,duel_def:3,duel_press:0,shot:4,v1:24,counterattack:2,assists:0,clearances:0,gk_save:0,shots:4,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:24,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(9) M. Kjos",jersey:9,isStabek:true,pos:"FW",total:48,plus:5,minus:6,efficiency:-1,smart_pass:11,duel_def:1,duel_press:0,shot:6,v1:13,counterattack:1,assists:0,clearances:3,gk_save:0,shots:6,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:13,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(14) H. Hytterød",jersey:14,isStabek:true,pos:"WB",total:34,plus:3,minus:3,efficiency:0,smart_pass:10,duel_def:3,duel_press:0,shot:1,v1:4,counterattack:0,assists:0,clearances:3,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:4,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null}
+    ]
+  }
+];
 
 /* ── Helpers ─────────────────────────────────────────────────────── */
 function ev(val,t,op){if(val===null||val===undefined||val==="")return"na";const v=+val,tg=+t;if(op===">")return v>tg?"pass":"fail";if(op===">=")return v>=tg?"pass":"fail";if(op==="<")return v<tg?"pass":"fail";if(op==="<=")return v<=tg?"pass":"fail";return"na";}
@@ -358,7 +580,7 @@ function PlayerView({m}){
               <select value={pos} onChange={e=>setPosOv(prev=>({...prev,[p.name]:e.target.value}))} style={{background:T.border,border:"none",borderRadius:4,color:T.text,fontSize:9,fontFamily:"inherit",padding:"2px 4px",cursor:"pointer"}}>{POS_ORDER.map(po=><option key={po} value={po}>{po}</option>)}</select>
             </div>
           </div>
-          {rk.length>0&&<div style={{borderTop:`1px solid ${T.border}`,paddingTop:6,marginBottom:7}}>{rk.map((k,i)=>{const s=ev(p[k.id],k.t,k.op);const ss=SS[s];return(<div key={k.id} style={{display:"flex",alignItems:"center",gap:5,padding:"2px 0",borderBottom:i<rk.length-1?`1px solid ${T.border}15`:"none"}}><span style={{fontSize:8,color:ss.c,fontWeight:800,width:10,flexShrink:0}}>{ss.sym}</span><span style={{flex:1,fontSize:10,color:s==="na"?T.muted:T.text}}>{k.label}</span><span style={{fontSize:9,color:T.muted}}>{opS[k.op]}{k.t}</span><span style={{fontSize:12,fontWeight:800,color:ss.c,minWidth:24,textAlign:"right"}}>{p[k.id]!=null?p[k.id]:"—"}</span></div>);})}</div>}
+          {rk.length>0&&<div style={{borderTop:`1px solid ${T.border}`,paddingTop:6,marginBottom:7}}>{rk.map((k,i)=>{const s=ev(p[k.id],k.t,k.op);const ss=SS[s];return(<div key={k.id} style={{display:"flex",alignItems:"flex-start",gap:5,padding:"3px 0",borderBottom:i<rk.length-1?`1px solid ${T.border}15`:"none"}}><span style={{fontSize:8,color:ss.c,fontWeight:800,width:10,flexShrink:0,marginTop:2}}>{ss.sym}</span><div style={{flex:1}}><span style={{fontSize:10,color:s==="na"?T.muted:T.text}}>{k.label}</span>{k.info&&<div style={{fontSize:9,color:T.muted,lineHeight:1.3}}>{k.info}</div>}</div><span style={{fontSize:9,color:T.muted,flexShrink:0}}>{opS[k.op]}{k.t}</span><span style={{fontSize:12,fontWeight:800,color:ss.c,minWidth:24,textAlign:"right",flexShrink:0}}>{p[k.id]!=null?p[k.id]:"—"}</span></div>);})}</div>}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 10px"}}>
             {src==="pdf"&&<><Stat label="xGChain" val={p.xGChain} color={T.amber} bold/><Stat label="xG" val={p.xG_player} color={T.green} bold/><Stat label="Avslut." val={p.shots} color={T.red}/><Stat label="Nøkkelp." val={p.key_passes} color={T.blueL}/><Stat label="Press" val={p.pressures} color={T.purple}/><Stat label="Taklinger" val={p.tackles} color={T.blue}/></>}
             {src==="player"&&<><Stat label="Aksjoner" val={p.total} color={T.blueL} bold/><Stat label="Eff." val={p.efficiency!=null?(p.efficiency>=0?`+${p.efficiency}`:p.efficiency):"—"} color={(p.efficiency||0)>=0?T.green:T.red} bold/><Stat label="Smart p." val={p.smart_pass} color={T.amber}/><Stat label="Avslut." val={p.shot} color={T.red}/><Stat label="1v1" val={p.v1} color={T.purple}/><Stat label="Def.duel" val={p.duel_def} color={T.blue}/></>}
@@ -389,7 +611,10 @@ function HistoryView({matches,sel,onSel}){
     <div style={{overflowX:"auto"}}>
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:600}}>
         <thead><tr style={{borderBottom:`2px solid ${T.border}`}}>{["Kamp","Kilde","Dato","Res.","Bes%","Avsl.for","Avsl.mot","xG","KPI"].map(h=><th key={h} style={{padding:"7px 9px",textAlign:"left",fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,fontWeight:700,whiteSpace:"nowrap"}}>{h}</th>)}</tr></thead>
-        <tbody>{matches.map((mx,i)=>{let kp=0,kt=0;TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(mx[k.id],k.t,k.op);if(s!=="na"){kt++;if(s==="pass")kp++;}}));const sc=mx.scoreFor>mx.scoreAgainst?T.green:mx.scoreFor===mx.scoreAgainst?T.amber:T.red;return(<tr key={mx.id} onClick={()=>onSel(i)} style={{borderBottom:`1px solid ${T.border}`,cursor:"pointer",background:sel===i?T.blue+"08":"transparent"}}><td style={{padding:"9px",fontWeight:700,maxWidth:140,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{mx.filename}</td><td style={{padding:"9px"}}><SrcTag s={mx.source}/></td><td style={{padding:"9px",color:T.muted}}>{mx.date}</td><td style={{padding:"9px"}}><span style={{fontWeight:800,color:sc,fontSize:14}}>{mx.scoreFor}–{mx.scoreAgainst}</span></td><td style={{padding:"9px"}}>{mx.possession!=null?`${mx.possession}%`:"-"}</td><td style={{padding:"9px",color:T.green}}>{mx.avslutninger??"-"}</td><td style={{padding:"9px",color:T.red}}>{mx.oppShots??"-"}</td><td style={{padding:"9px",color:T.amber}}>{mx.xG??"-"}</td><td style={{padding:"9px"}}>{kt?<span style={{background:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red)+"18",color:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red),borderRadius:20,padding:"1px 8px",fontWeight:700,fontSize:10}}>{kp}/{kt}</span>:"-"}</td></tr>);})}</tbody>
+        <tbody>{matches.map((mx,i)=>{let kp=0,kt=0;TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(mx[k.id],k.t,k.op);if(s!=="na"){kt++;if(s==="pass")kp++;}}));const sc=mx.scoreFor>mx.scoreAgainst?T.green:mx.scoreFor===mx.scoreAgainst?T.amber:T.red;return(<tr key={mx.id} onClick={()=>onSel(i)} style={{borderBottom:`1px solid ${T.border}`,cursor:"pointer",background:sel===i?T.blue+"08":"transparent"}}><td style={{padding:"9px",maxWidth:160,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+              <div style={{fontWeight:700,fontSize:12,color:T.blueL}}>{mx.stabTeam||mx.filename.split(" vs ")[0]}</div>
+              <div style={{fontSize:10,color:T.muted}}>vs {mx.oppTeam||mx.filename.split(" vs ")[1]||""}</div>
+            </td><td style={{padding:"9px"}}><SrcTag s={mx.source}/></td><td style={{padding:"9px",color:T.muted}}>{mx.date}</td><td style={{padding:"9px"}}><span style={{fontWeight:800,color:sc,fontSize:14}}>{mx.scoreFor}–{mx.scoreAgainst}</span></td><td style={{padding:"9px"}}>{mx.possession!=null?`${mx.possession}%`:"-"}</td><td style={{padding:"9px",color:T.green}}>{mx.avslutninger??"-"}</td><td style={{padding:"9px",color:T.red}}>{mx.oppShots??"-"}</td><td style={{padding:"9px",color:T.amber}}>{mx.xG??"-"}</td><td style={{padding:"9px"}}>{kt?<span style={{background:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red)+"18",color:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red),borderRadius:20,padding:"1px 8px",fontWeight:700,fontSize:10}}>{kp}/{kt}</span>:"-"}</td></tr>);})}</tbody>
       </table>
     </div>
     {matches.length>1&&<div style={{marginTop:20}}>
