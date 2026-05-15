@@ -219,111 +219,173 @@ const POS_ORDER=["GK","CB","WB","CM","AM","FW","SUB"];
 const ROLE_KPIS={
   GK:{
     player:[
-      {id:"total",      label:"Totale aksjoner",           t:50,  op:">=",info:"Aktivitetsnivå i spillet"},
-      {id:"efficiency", label:"Eff. (+/−)",                 t:0,   op:">=",info:"Netto positiv innvirkning"},
-      {id:"smart_pass", label:"Smarte pasn. (skapefasen)",  t:8,   op:">=",info:"Initierer angrep fra bakrom"},
-      {id:"gk_save",    label:"Redninger",                  t:0,   op:">=",info:"Holder nullen"},
-      {id:"clearances", label:"Klaringer (sikring)",        t:1,   op:">=",info:"Rydder farligheter"},
+      {id:"total",      label:"Totale aksjoner",         t:50,op:">=",phase:"generelt",info:"Aktivitetsnivå i spillet"},
+      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",phase:"generelt",info:"Netto positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasninger",        t:8, op:">=",phase:"angrep",  info:"A1: Starter angrepsspill — keeper som playmaker"},
+      {id:"gk_save",    label:"Redninger",               t:0, op:">=",phase:"forsvar", info:"F3: Skuddstopper — hindre mål"},
+      {id:"clearances", label:"Klaringer",               t:1, op:">=",phase:"forsvar", info:"F3: Kontroll på boks — rydder farligheter"},
     ],
     pdf:[
-      {id:"xGChain",    label:"xGChain",                   t:0.5, op:">=",info:"Deltar i lagets angrepssekvenser"},
-      {id:"pass_pct",   label:"Pasningsprosent %",          t:70,  op:">=",info:"Trygg ball ut fra keeper"},
-      {id:"clearances", label:"Klaringer",                  t:1,   op:">=",info:"Sikring av eget felt"},
+      {id:"xGChain",    label:"xGChain",                 t:0.5,op:">=",phase:"angrep", info:"Deltar i lagets angrepskjeder"},
+      {id:"pass_pct",   label:"Pasningsprosent %",       t:70, op:">=",phase:"angrep", info:"A1: Trygg distribusjon ut fra keeper"},
+      {id:"clearances", label:"Klaringer",               t:1,  op:">=",phase:"forsvar",info:"F3: Hindrer truende situasjoner i boks"},
     ],
-    team:[{id:"total",label:"Sekvenser totalt",t:40,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:10,op:">="}],
+    team:[
+      {id:"total",      label:"Sekvenser totalt",        t:40,op:">=",phase:"generelt",info:"Involvert i lagets spill"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:10,op:">=",phase:"angrep",  info:"Deltakelse i oppbyggende spill"},
+    ],
   },
   CB:{
     player:[
-      {id:"total",      label:"Totale aksjoner",           t:40,  op:">=",info:"Involvert i lagets spill"},
-      {id:"efficiency", label:"Eff. (+/−)",                 t:0,   op:">=",info:"Netto positiv innvirkning"},
-      {id:"smart_pass", label:"Smarte pasn. (bygger opp)", t:15,  op:">=",info:"Starter angrepsspill"},
-      {id:"duel_def",   label:"Def. dueller vunnet",       t:5,   op:">=",info:"Vinner dueller — linjekontroll"},
-      {id:"clearances", label:"Klaringer",                  t:2,   op:">=",info:"Rydder farligheter"},
+      {id:"total",      label:"Totale aksjoner",         t:40,op:">=",phase:"generelt",info:"Involvert i lagets spill"},
+      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",phase:"generelt",info:"Netto positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasninger",        t:15,op:">=",phase:"angrep",  info:"A1: Starter angrep — leder bakre ledd fremover"},
+      {id:"duel_def",   label:"Def. dueller vunnet",     t:5, op:">=",phase:"forsvar", info:"F1/F2: Vinner dueller — holder linjene"},
+      {id:"clearances", label:"Klaringer",               t:2, op:">=",phase:"forsvar", info:"F3: Rydder farligheter, kontroll på boks"},
     ],
     pdf:[
-      {id:"xGChain",      label:"xGChain",                 t:0.5, op:">=",info:"Bidrar i angrepskjeder"},
-      {id:"tackles",      label:"Taklinger vunnet",        t:2,   op:">=",info:"Vinner dueller"},
-      {id:"interceptions",label:"Interceptions",           t:1,   op:">=",info:"Leser spillet, bryter linjer"},
-      {id:"clearances",   label:"Klaringer",               t:2,   op:">=",info:"Rydder farligheter"},
-      {id:"pass_pct",     label:"Pasningsprosent %",       t:82,  op:">=",info:"Trygg ballsirkulering bak"},
+      {id:"xGChain",      label:"xGChain",               t:0.5,op:">=",phase:"angrep", info:"A1/A2: Bidrar i angrepskjeder"},
+      {id:"tackles",      label:"Taklinger vunnet",      t:2,  op:">=",phase:"forsvar",info:"F1: Vinner ball i press"},
+      {id:"interceptions",label:"Interceptions",         t:1,  op:">=",phase:"forsvar",info:"F2: Leser spillet — bryter pasningslinjer"},
+      {id:"clearances",   label:"Klaringer",             t:2,  op:">=",phase:"forsvar",info:"F3: Rydder farligheter"},
+      {id:"pass_pct",     label:"Pasningsprosent %",     t:82, op:">=",phase:"angrep", info:"A1: Trygg ballsirkulering bak"},
     ],
-    team:[{id:"total",label:"Sekvenser",t:30,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:30,op:">="}],
+    team:[
+      {id:"total",      label:"Sekvenser",               t:30,op:">=",phase:"generelt",info:"Aktiv i lagets spill"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:30,op:">=",phase:"angrep",  info:"A1/A2: Deltar i oppbyggende faser"},
+    ],
   },
   WB:{
     player:[
-      {id:"total",        label:"Totale aksjoner",         t:30,  op:">=",info:"Aktiv i begge faser"},
-      {id:"smart_pass",   label:"Smarte pasn. (innlegg)",  t:8,   op:">=",info:"Innlegg og kombinasjoner"},
-      {id:"v1",           label:"1v1 dueller (slår fri)",  t:5,   op:">=",info:"Kombinerer seg forbi"},
-      {id:"duel_def",     label:"Def. dueller vunnet",     t:3,   op:">=",info:"Forsvarsbidrag på kant"},
-      {id:"counterattack",label:"Kontringsinitiativ",      t:1,   op:">=",info:"Trigger raske overganger"},
+      {id:"total",        label:"Totale aksjoner",       t:30,op:">=",phase:"generelt",info:"Aktiv i begge faser"},
+      {id:"smart_pass",   label:"Smarte pasninger",      t:8, op:">=",phase:"angrep",  info:"A2: Innlegg og kombinasjoner fra kant"},
+      {id:"v1",           label:"1v1 dueller",           t:5, op:">=",phase:"angrep",  info:"A2: Slår seg forbi — skaper overtall"},
+      {id:"duel_def",     label:"Def. dueller vunnet",   t:3, op:">=",phase:"forsvar", info:"F1/F2: Forsvarsbidrag på kant"},
+      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",phase:"omstilling",info:"Omstilling: Trigger raske overganger"},
     ],
     pdf:[
-      {id:"xGChain",    label:"xGChain",                   t:0.6, op:">=",info:"Involvert i angrepskjeder"},
-      {id:"key_passes", label:"Nøkkelpasn. / innlegg",     t:1,   op:">=",info:"Skaper sjanser fra kant"},
-      {id:"dribbles",   label:"Vellykkede driblinger",     t:1,   op:">=",info:"Slår seg forbi kant"},
-      {id:"tackles",    label:"Taklinger vunnet",          t:2,   op:">=",info:"Defensivt bidrag"},
+      {id:"xGChain",    label:"xGChain",                 t:0.6,op:">=",phase:"angrep", info:"A2: Involvert i sjanseskaping fra kant"},
+      {id:"key_passes", label:"Nøkkelpasn. / innlegg",   t:1,  op:">=",phase:"angrep", info:"A2/A3: Skaper sjanser med innlegg"},
+      {id:"dribbles",   label:"Vellykkede driblinger",   t:1,  op:">=",phase:"angrep", info:"A2: Slår seg forbi forsvarere"},
+      {id:"tackles",    label:"Taklinger vunnet",        t:2,  op:">=",phase:"forsvar",info:"F1/F2: Defensivt bidrag"},
     ],
-    team:[{id:"total",label:"Sekvenser",t:30,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:40,op:">="}],
+    team:[
+      {id:"total",      label:"Sekvenser",               t:30,op:">=",phase:"generelt",info:"Aktiv i begge faser"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:40,op:">=",phase:"angrep",  info:"A2: Støtter angrep fra kant"},
+    ],
   },
   CM:{
     player:[
-      {id:"total",      label:"Totale aksjoner",             t:50,  op:">=",info:"Hjerte i lagets spill"},
-      {id:"efficiency", label:"Eff. (+/−)",                   t:0,   op:">=",info:"Positiv innvirkning"},
-      {id:"smart_pass", label:"Smarte pasn. (forbindelsesledd)",t:18,op:">=",info:"Kobler bakrom til front"},
-      {id:"v1",         label:"1v1 dueller (Ping-Pong)",      t:8,   op:">=",info:"Ping-Pong press + lokke"},
-      {id:"duel_press", label:"Press-dueller",                t:3,   op:">=",info:"Presser kontrollert"},
+      {id:"total",      label:"Totale aksjoner",         t:50,op:">=",phase:"generelt",info:"Hjerte i lagets spill"},
+      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",phase:"generelt",info:"Netto positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasninger",        t:18,op:">=",phase:"angrep",  info:"A1/A2: Kobler bakrom til front — forløser spillere"},
+      {id:"v1",         label:"1v1 dueller (Ping-Pong)", t:8, op:">=",phase:"forsvar", info:"F1: Ping-Pong press — lokker og vinner ball"},
+      {id:"duel_press", label:"Press-dueller",           t:3, op:">=",phase:"forsvar", info:"F1: Presser kontrollert — leder fremre ledd"},
     ],
     pdf:[
-      {id:"xGChain",    label:"xGChain",                     t:0.8, op:">=",info:"Sentralt i angrepskjeder"},
-      {id:"key_passes", label:"Nøkkelpasn.",                  t:2,   op:">=",info:"Direkte sjansskapning"},
-      {id:"pressures",  label:"Press-aksjoner",               t:10,  op:">=",info:"Høyt og aktivt press"},
-      {id:"tackles",    label:"Taklinger vunnet",             t:3,   op:">=",info:"Vinner ballen tilbake"},
-      {id:"pass_pct",   label:"Pasningsprosent %",            t:80,  op:">=",info:"Sirkulerer trygt og raskt"},
+      {id:"xGChain",    label:"xGChain",                 t:0.8,op:">=",phase:"angrep", info:"A1/A2: Sentral i angrepskjeder"},
+      {id:"key_passes", label:"Nøkkelpasninger",         t:2,  op:">=",phase:"angrep", info:"A2/A3: Magic pass — forløser rom"},
+      {id:"pressures",  label:"Press-aksjoner",          t:10, op:">=",phase:"forsvar",info:"F1: Høyt og aktivt press"},
+      {id:"tackles",    label:"Taklinger vunnet",        t:3,  op:">=",phase:"forsvar",info:"F1/F2: Vinner ballen tilbake"},
+      {id:"pass_pct",   label:"Pasningsprosent %",       t:80, op:">=",phase:"angrep", info:"A1: Sirkulerer trygt og raskt"},
     ],
-    team:[{id:"total",label:"Sekvenser",t:40,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:50,op:">="}],
+    team:[
+      {id:"total",      label:"Sekvenser",               t:40,op:">=",phase:"generelt",info:"Sentralt involvert"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:50,op:">=",phase:"angrep",  info:"A2: Deltar i angrepsspill"},
+    ],
   },
   AM:{
     player:[
-      {id:"total",        label:"Totale aksjoner",           t:40,  op:">=",info:"Aktiv i skapefasen"},
-      {id:"smart_pass",   label:"Smarte pasn. (veggspill)",  t:15,  op:">=",info:"Kombinerer seg inn i rom"},
-      {id:"shot",         label:"Avslutninger",              t:1,   op:">=",info:"Trekker til avslutning"},
-      {id:"v1",           label:"1v1 dueller (slår seg fri)",t:10,  op:">=",info:"Dribbler fra kant/halvrom"},
-      {id:"counterattack",label:"Kontringsinitiativ",        t:1,   op:">=",info:"Trigger raske overganger"},
+      {id:"total",        label:"Totale aksjoner",       t:40,op:">=",phase:"generelt",info:"Aktiv i skapefasen"},
+      {id:"smart_pass",   label:"Smarte pasninger",      t:15,op:">=",phase:"angrep",  info:"A2: Kombinerer, veggspill, tredjemann"},
+      {id:"shot",         label:"Avslutninger",          t:1, op:">=",phase:"angrep",  info:"A3: Trekker til avslutning fra mellomrom"},
+      {id:"v1",           label:"1v1 dueller",           t:10,op:">=",phase:"angrep",  info:"A2: Dribbler fra kant/halvrom — snu spill"},
+      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",phase:"omstilling",info:"Omstilling: Trigger raske overganger"},
     ],
     pdf:[
-      {id:"xGChain",    label:"xGChain",                     t:1.0, op:">=",info:"Høy involvering i sjanseskaping"},
-      {id:"shots",      label:"Avslutninger",                t:2,   op:">=",info:"Trekker til avslutning"},
-      {id:"key_passes", label:"Nøkkelpasn.",                  t:2,   op:">=",info:"Siste pasning før avslutning"},
-      {id:"xG_player",  label:"xG (skuddsjanser)",           t:0.3, op:">=",info:"Havner i gode skuddposisjoner"},
+      {id:"xGChain",    label:"xGChain",                 t:1.0,op:">=",phase:"angrep", info:"A2/A3: Høy involvering i sjanseskaping"},
+      {id:"shots",      label:"Avslutninger",            t:2,  op:">=",phase:"angrep", info:"A3: Trekker til avslutning"},
+      {id:"key_passes", label:"Nøkkelpasninger",         t:2,  op:">=",phase:"angrep", info:"A2/A3: Siste pasning før avslutning"},
+      {id:"xG_player",  label:"xG",                     t:0.3,op:">=",phase:"angrep", info:"A3: Havner i gode skuddposisjoner"},
     ],
-    team:[{id:"total",label:"Sekvenser",t:35,op:">="},{id:"shot",label:"Avslut-seq",t:3,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:55,op:">="}],
+    team:[
+      {id:"total",      label:"Sekvenser",               t:35,op:">=",phase:"generelt",info:"Aktiv i angrepsspill"},
+      {id:"shot",       label:"Avslut-sekvenser",        t:3, op:">=",phase:"angrep",  info:"A3: Involvert i avslutningssituasjoner"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:55,op:">=",phase:"angrep",  info:"A2/A3: Opererer i farlige soner"},
+    ],
   },
   FW:{
     player:[
-      {id:"shot",         label:"Avslutninger (angriper bak)",t:3,  op:">=",info:"Angriper bakrom og avslutter"},
-      {id:"v1",           label:"1v1 dueller (slår CB)",      t:8,  op:">=",info:"Holder på ball under press"},
-      {id:"efficiency",   label:"Eff. (+/−)",                 t:-3, op:">=",info:"Ikke under −3 (presser gevinst)"},
-      {id:"counterattack",label:"Kontringsinitiativ",         t:1,  op:">=",info:"Trigger kontring med løp"},
-      {id:"smart_pass",   label:"Smarte pasn. (avlastning)",  t:5,  op:">=",info:"Avlaster under press"},
+      {id:"shot",         label:"Avslutninger",          t:3, op:">=",phase:"angrep",  info:"A3: Angriper bakrom og avslutter — scoringsrom"},
+      {id:"v1",           label:"1v1 dueller",           t:8, op:">=",phase:"angrep",  info:"A2/A3: Holder på ball under press — slår CB"},
+      {id:"efficiency",   label:"Effektivitet (+/−)",    t:-3,op:">=",phase:"generelt",info:"Ikke under −3: gevinst i pressjaget"},
+      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",phase:"omstilling",info:"Omstilling: Trigger kontring med løp i bakrom"},
+      {id:"smart_pass",   label:"Smarte pasninger",      t:5, op:">=",phase:"angrep",  info:"A1/A2: Avlaster under press — veggspill"},
     ],
     pdf:[
-      {id:"shots",      label:"Avslutninger",                 t:3,  op:">=",info:"Angriper bak og avslutter"},
-      {id:"xG_player",  label:"xG",                          t:0.5,op:">=",info:"Havner i høykvalitetssjanser"},
-      {id:"xGChain",    label:"xGChain",                      t:1.0,op:">=",info:"Sentral i lagets angrepsspill"},
-      {id:"dribbles",   label:"Vellykkede driblinger",        t:1,  op:">=",info:"Slår seg forbi forsvarere"},
+      {id:"shots",      label:"Avslutninger",            t:3, op:">=",phase:"angrep",  info:"A3: Angriper bak og avslutter"},
+      {id:"xG_player",  label:"xG",                     t:0.5,op:">=",phase:"angrep", info:"A3: Havner i høykvalitetssjanser"},
+      {id:"xGChain",    label:"xGChain",                 t:1.0,op:">=",phase:"angrep", info:"A2/A3: Sentral i angrepsspill"},
+      {id:"dribbles",   label:"Vellykkede driblinger",   t:1, op:">=",phase:"angrep",  info:"A2: Slår seg forbi forsvarere"},
     ],
-    team:[{id:"total",label:"Sekvenser",t:25,op:">="},{id:"shot",label:"Avslut-seq",t:4,op:">="},{id:"finalThirdP",label:"Siste tredel %",t:60,op:">="}],
+    team:[
+      {id:"total",      label:"Sekvenser",               t:25,op:">=",phase:"generelt",info:"Aktiv i angrepsspill"},
+      {id:"shot",       label:"Avslut-sekvenser",        t:4, op:">=",phase:"angrep",  info:"A3: Involvert i avslutningssituasjoner"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:60,op:">=",phase:"angrep",  info:"A3: Opererer i scoringssoner"},
+    ],
   },
   SUB:{player:[],pdf:[],team:[]},
 };
 
-const TEAM_KPIS=[
-  {id:"dom",label:"Dominere kamper",items:[{id:"possession",label:"Possession %",t:55,op:">",unit:"%",src:["pdf","team","player"]},{id:"pasningar",label:"Pasninger totalt",t:450,op:">",src:["pdf"]},{id:"avslutninger",label:"Avslutninger",t:15,op:">",src:["pdf","team","player"]},{id:"touchBoks",label:"Touch i motst. boks",t:20,op:">",src:["pdf"]},{id:"passComp",label:"Pasningsprosent %",t:75,op:">",unit:"%",src:["pdf"]}]},
-  {id:"off",label:"Offensiv & angrepsvilling",items:[{id:"xG",label:"xG",t:2,op:">=",src:["pdf"]},{id:"maal",label:"Scorede mål",t:2,op:">=",src:["pdf","team","player"]},{id:"dribbSuksess",label:"Suksess % driblinger",t:60,op:">",unit:"%",src:["pdf"]},{id:"createdChances",label:"Skapte sjanser",t:10,op:">=",src:["player"]},{id:"highTransP",label:"Høye overganger %",t:8,op:">",unit:"%",src:["team"]}]},
-  {id:"omst",label:"Omstillinger",items:[{id:"highTrans",label:"Høye overganger",t:5,op:">=",src:["team"]},{id:"counterAttForward",label:"Kontrings-aksjoner",t:3,op:">=",src:["player"]},{id:"maalOffTrans",label:"Mål off. overganger",t:1,op:">",manual:true,src:["pdf","team","player"]}]},
-  {id:"fors",label:"Forsvarsspill",items:[{id:"oppShots",label:"Avslutninger imot",t:10,op:"<",src:["pdf","team","player"]},{id:"xGa",label:"xGa",t:1,op:"<",src:["pdf"]},{id:"oppGoals",label:"Innslupne mål",t:1,op:"<",src:["pdf","team","player"]},{id:"pressureRegains",label:"Press-gjenvindinger",t:40,op:">=",src:["pdf"]},{id:"maalDefTrans",label:"Mål def. overganger",t:1,op:"<",manual:true,src:["pdf","team","player"]}]},
-  {id:"dod",label:"Dødball",items:[{id:"dodPlusMinus",label:"+/− dødball (mål)",t:1,op:">",src:["pdf"]},{id:"avslutningerDP",label:"Egne dødball-skudd",t:2,op:">",src:["pdf"],manual:true},{id:"oppCorners",label:"Motst. hjørnespark",t:4,op:"<",src:["team","player","pdf"]},{id:"oppSetPieces",label:"Motst. dødball totalt",t:23,op:"<",src:["team","player"]},{id:"oppSPShots",label:"Motst. dødball-skudd",t:2,op:"<",src:["pdf"],manual:true}]},
+// Team KPI groups — split by attack/defense phase
+const ATTACK_KPIS=[
+  {id:"dom",label:"Dominere kamper",items:[
+    {id:"possession",   label:"Possession %",         t:55,op:">",unit:"%",src:["pdf","team","player"]},
+    {id:"pasningar",    label:"Pasninger totalt",      t:450,op:">",       src:["pdf"]},
+    {id:"avslutninger", label:"Avslutninger",          t:15,op:">",        src:["pdf","team","player"]},
+    {id:"touchBoks",    label:"Touch i motst. boks",   t:20,op:">",        src:["pdf"]},
+    {id:"passComp",     label:"Pasningsprosent %",     t:75,op:">",unit:"%",src:["pdf"]},
+  ]},
+  {id:"off",label:"Offensiv & angrepsvillig",items:[
+    {id:"xG",           label:"xG",                   t:2, op:">=",       src:["pdf"]},
+    {id:"maal",         label:"Scorede mål",           t:2, op:">=",       src:["pdf","team","player"]},
+    {id:"dribbSuksess", label:"Suksess % driblinger",  t:60,op:">",unit:"%",src:["pdf"]},
+    {id:"createdChances",label:"Skapte sjanser",       t:10,op:">=",       src:["player"]},
+    {id:"highTransP",   label:"Høye overganger %",     t:8, op:">",unit:"%",src:["team"]},
+  ]},
+  {id:"omstA",label:"Omstillinger (angrep)",items:[
+    {id:"highTrans",    label:"Høye overganger",       t:5, op:">=",       src:["team"]},
+    {id:"counterAttForward",label:"Kontrings-aksjoner",t:3, op:">=",       src:["player"]},
+    {id:"maalOffTrans", label:"Mål off. overganger",   t:1, op:">",manual:true,src:["pdf","team","player"]},
+  ]},
+  {id:"dodA",label:"Dødball (offensiv)",items:[
+    {id:"dodPlusMinus", label:"+/− dødball (mål)",     t:1, op:">",        src:["pdf"]},
+    {id:"avslutningerDP",label:"Egne dødball-skudd",   t:2, op:">",manual:true,src:["pdf"]},
+  ]},
 ];
+
+const DEFENSE_KPIS=[
+  {id:"fors",label:"Forsvarsspill",items:[
+    {id:"oppShots",     label:"Avslutninger imot",     t:10,op:"<",        src:["pdf","team","player"]},
+    {id:"xGa",          label:"xGa",                  t:1, op:"<",        src:["pdf"]},
+    {id:"oppGoals",     label:"Innslupne mål",         t:1, op:"<",        src:["pdf","team","player"]},
+    {id:"pressureRegains",label:"Press-gjenvindinger", t:40,op:">=",       src:["pdf"]},
+    {id:"ballerobrMotst",label:"Ballerobringer motst. halvdel",t:10,op:">=",manual:true,src:["pdf","team","player"]},
+    {id:"ppda",         label:"PPDA (trekk før brudd)",t:10,op:"<", manual:true,src:["pdf","team","player"]},
+  ]},
+  {id:"omstF",label:"Omstillinger (forsvar)",items:[
+    {id:"maalDefTrans", label:"Mål def. overganger",   t:1, op:"<",manual:true,src:["pdf","team","player"]},
+    {id:"oppAttacks",   label:"Motst. åpne angrep",    t:43,op:"<",        src:["team"]},
+  ]},
+  {id:"dodF",label:"Dødball (defensiv)",items:[
+    {id:"oppCorners",   label:"Motst. hjørnespark",    t:4, op:"<",        src:["team","player","pdf"]},
+    {id:"oppSetPieces", label:"Motst. dødball totalt", t:23,op:"<",        src:["team","player"]},
+    {id:"oppSPShots",   label:"Motst. dødball-skudd",  t:2, op:"<",manual:true,src:["pdf"]},
+  ]},
+];
+
+const TEAM_KPIS=[...ATTACK_KPIS,...DEFENSE_KPIS];
+
 
 /* ── PDF Parser (Gemini) ─────────────────────────────────────────── */
 const PDF_PROMPT=`Extract ALL data from this StatsBomb football match report PDF. Return ONLY valid JSON, no markdown, no explanation.
@@ -495,7 +557,7 @@ const DEMOS=[
     createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",
     oppShots:7,xGa:0.19,oppGoals:0,oppAttacks:null,pressureRegains:57,
     dodPlusMinus:1,oppCorners:3,oppSetPieces:5,
-    players:[{name:"Max Hammerich",jersey:9,isStabek:true,pos:"FW",shots:9,goals:2,xG_player:2.64,key_passes:1,assists:0,xGChain:2.76,xG_buildup:0.8,pressures:26,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:1,final_third_passes:15,pass_pct:75,touches_in_box:11,shot:9,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Oliver Lerdrup",jersey:7,isStabek:true,pos:"AM",shots:8,goals:2,xG_player:1.71,key_passes:5,assists:1,xGChain:3.82,xG_buildup:1.03,pressures:20,tackles:3,interceptions:0,clearances:2,dribbles:0,dispossessions:0,passes_into_box:2,final_third_passes:20,pass_pct:75,touches_in_box:14,shot:8,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Ludvig Slæperud",jersey:10,isStabek:true,pos:"CM",shots:4,goals:0,xG_player:0.13,key_passes:10,assists:2,xGChain:2.88,xG_buildup:1.98,pressures:16,tackles:4,interceptions:1,clearances:0,dribbles:0,dispossessions:0,passes_into_box:9,final_third_passes:45,pass_pct:77,touches_in_box:2,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Carl-Alexander Forsström",jersey:3,isStabek:true,pos:"CB",shots:4,goals:0,xG_player:0.26,key_passes:1,assists:0,xGChain:2.6,xG_buildup:2.31,pressures:5,tackles:3,interceptions:1,clearances:2,dribbles:4,dispossessions:0,passes_into_box:2,final_third_passes:20,pass_pct:82,touches_in_box:7,shot:4,v1:4,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Frantz Johannessen",jersey:50,isStabek:true,pos:"WB",shots:2,goals:0,xG_player:0.25,key_passes:5,assists:0,xGChain:1.63,xG_buildup:1.4,pressures:19,tackles:3,interceptions:0,clearances:0,dribbles:1,dispossessions:1,passes_into_box:3,final_third_passes:25,pass_pct:79,touches_in_box:5,shot:2,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Steinar Wangen",jersey:11,isStabek:true,pos:"WB",shots:4,goals:0,xG_player:0.24,key_passes:2,assists:0,xGChain:0.69,xG_buildup:0.3,pressures:8,tackles:1,interceptions:0,clearances:3,dribbles:3,dispossessions:4,passes_into_box:4,final_third_passes:18,pass_pct:64,touches_in_box:3,shot:4,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Edvard Bull-Rostrup",jersey:2,isStabek:true,pos:"CB",shots:2,goals:0,xG_player:0.34,key_passes:0,assists:0,xGChain:0.95,xG_buildup:0.48,pressures:8,tackles:5,interceptions:0,clearances:2,dribbles:3,dispossessions:3,passes_into_box:0,final_third_passes:24,pass_pct:91,touches_in_box:6,shot:2,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Aksel Willand-Grønli",jersey:14,isStabek:true,pos:"CB",shots:1,goals:0,xG_player:0.11,key_passes:0,assists:0,xGChain:1.22,xG_buildup:1.11,pressures:5,tackles:3,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:26,pass_pct:86,touches_in_box:2,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"August Kirkenær",jersey:4,isStabek:true,pos:"WB",shots:0,goals:0,xG_player:0.0,key_passes:2,assists:0,xGChain:0.77,xG_buildup:0.77,pressures:7,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:15,pass_pct:89,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Nicolas Da Rocha",jersey:99,isStabek:true,pos:"GK",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.83,xG_buildup:0.83,pressures:0,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:0,pass_pct:86,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Jacob Wallace",jersey:8,isStabek:true,pos:"CM",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:1.16,xG_buildup:1.16,pressures:11,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:0,final_third_passes:6,pass_pct:88,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"William Neiden",jersey:6,isStabek:true,pos:"CM",shots:2,goals:0,xG_player:0.16,key_passes:0,assists:0,xGChain:0.93,xG_buildup:0.77,pressures:4,tackles:2,interceptions:0,clearances:1,dribbles:2,dispossessions:3,passes_into_box:2,final_third_passes:8,pass_pct:77,touches_in_box:4,shot:2,v1:2,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Markus Skjellvik",jersey:19,isStabek:true,pos:"FW",shots:1,goals:0,xG_player:0.03,key_passes:1,assists:0,xGChain:0.29,xG_buildup:0.16,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:1,final_third_passes:5,pass_pct:89,touches_in_box:1,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Sondre Omland",jersey:18,isStabek:true,pos:"CB",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:1.13,xG_buildup:1.13,pressures:0,tackles:1,interceptions:0,clearances:3,dribbles:1,dispossessions:1,passes_into_box:0,final_third_passes:0,pass_pct:90,touches_in_box:0,shot:0,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Nicolai Hageland",jersey:21,isStabek:true,pos:"CM",shots:1,goals:0,xG_player:0.05,key_passes:0,assists:0,xGChain:0.45,xG_buildup:0.4,pressures:2,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:2,final_third_passes:2,pass_pct:100,touches_in_box:0,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Altin Kocani",jersey:27,isStabek:true,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.15,xG_buildup:0.15,pressures:2,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:1,pass_pct:38,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null}]
+    players:[{name:"Max Hammerich",jersey:9,isStabek:true,isStarter:true,minutes_played:64,pos:"FW",shots:9,goals:2,xG_player:2.64,key_passes:1,assists:0,xGChain:2.76,xG_buildup:0.8,pressures:26,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:1,final_third_passes:15,pass_pct:75,touches_in_box:11,shot:9,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Oliver Lerdrup",jersey:7,isStabek:true,isStarter:true,minutes_played:87,pos:"AM",shots:8,goals:2,xG_player:1.71,key_passes:5,assists:1,xGChain:3.82,xG_buildup:1.03,pressures:20,tackles:3,interceptions:0,clearances:2,dribbles:0,dispossessions:0,passes_into_box:2,final_third_passes:20,pass_pct:75,touches_in_box:14,shot:8,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Ludvig Slæperud",jersey:10,isStabek:true,isStarter:true,minutes_played:90,pos:"CM",shots:4,goals:0,xG_player:0.13,key_passes:10,assists:2,xGChain:2.88,xG_buildup:1.98,pressures:16,tackles:4,interceptions:1,clearances:0,dribbles:0,dispossessions:0,passes_into_box:9,final_third_passes:45,pass_pct:77,touches_in_box:2,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Carl-Alexander Forsström",jersey:3,isStabek:true,isStarter:true,minutes_played:90,pos:"CB",shots:4,goals:0,xG_player:0.26,key_passes:1,assists:0,xGChain:2.6,xG_buildup:2.31,pressures:5,tackles:3,interceptions:1,clearances:2,dribbles:4,dispossessions:0,passes_into_box:2,final_third_passes:20,pass_pct:82,touches_in_box:7,shot:4,v1:4,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Frantz Johannessen",jersey:50,isStabek:true,isStarter:true,minutes_played:90,pos:"WB",shots:2,goals:0,xG_player:0.25,key_passes:5,assists:0,xGChain:1.63,xG_buildup:1.4,pressures:19,tackles:3,interceptions:0,clearances:0,dribbles:1,dispossessions:1,passes_into_box:3,final_third_passes:25,pass_pct:79,touches_in_box:5,shot:2,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Steinar Wangen",jersey:11,isStabek:true,isStarter:true,minutes_played:79,pos:"WB",shots:4,goals:0,xG_player:0.24,key_passes:2,assists:0,xGChain:0.69,xG_buildup:0.3,pressures:8,tackles:1,interceptions:0,clearances:3,dribbles:3,dispossessions:4,passes_into_box:4,final_third_passes:18,pass_pct:64,touches_in_box:3,shot:4,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Edvard Bull-Rostrup",jersey:2,isStabek:true,isStarter:true,minutes_played:73,pos:"CB",shots:2,goals:0,xG_player:0.34,key_passes:0,assists:0,xGChain:0.95,xG_buildup:0.48,pressures:8,tackles:5,interceptions:0,clearances:2,dribbles:3,dispossessions:3,passes_into_box:0,final_third_passes:24,pass_pct:91,touches_in_box:6,shot:2,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Aksel Willand-Grønli",jersey:14,isStabek:true,isStarter:true,minutes_played:72,pos:"CB",shots:1,goals:0,xG_player:0.11,key_passes:0,assists:0,xGChain:1.22,xG_buildup:1.11,pressures:5,tackles:3,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:26,pass_pct:86,touches_in_box:2,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"August Kirkenær",jersey:4,isStabek:true,isStarter:true,minutes_played:72,pos:"WB",shots:0,goals:0,xG_player:0.0,key_passes:2,assists:0,xGChain:0.77,xG_buildup:0.77,pressures:7,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:15,pass_pct:89,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Nicolas Da Rocha",jersey:99,isStabek:true,isStarter:true,minutes_played:90,pos:"GK",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.83,xG_buildup:0.83,pressures:0,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:0,pass_pct:86,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Jacob Wallace",jersey:8,isStabek:true,isStarter:true,minutes_played:46,pos:"CM",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:1.16,xG_buildup:1.16,pressures:11,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:0,final_third_passes:6,pass_pct:88,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"William Neiden",jersey:6,isStabek:true,isStarter:false,minutes_played:44,pos:"CM",shots:2,goals:0,xG_player:0.16,key_passes:0,assists:0,xGChain:0.93,xG_buildup:0.77,pressures:4,tackles:2,interceptions:0,clearances:1,dribbles:2,dispossessions:3,passes_into_box:2,final_third_passes:8,pass_pct:77,touches_in_box:4,shot:2,v1:2,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Markus Skjellvik",jersey:19,isStabek:true,isStarter:false,minutes_played:27,pos:"FW",shots:1,goals:0,xG_player:0.03,key_passes:1,assists:0,xGChain:0.29,xG_buildup:0.16,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:1,final_third_passes:5,pass_pct:89,touches_in_box:1,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Sondre Omland",jersey:18,isStabek:true,isStarter:false,minutes_played:17,pos:"CB",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:1.13,xG_buildup:1.13,pressures:0,tackles:1,interceptions:0,clearances:3,dribbles:1,dispossessions:1,passes_into_box:0,final_third_passes:0,pass_pct:90,touches_in_box:0,shot:0,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Nicolai Hageland",jersey:21,isStabek:true,isStarter:false,minutes_played:17,pos:"CM",shots:1,goals:0,xG_player:0.05,key_passes:0,assists:0,xGChain:0.45,xG_buildup:0.4,pressures:2,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:2,final_third_passes:2,pass_pct:100,touches_in_box:0,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Altin Kocani",jersey:27,isStabek:true,isStarter:false,minutes_played:11,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.15,xG_buildup:0.15,pressures:2,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:1,pass_pct:38,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null}]
   },
   {
     id:"d2",filename:"Stabæk U19 vs Odds U19",stabTeam:"Stabæk U19",oppTeam:"Odds U19",
@@ -506,17 +568,17 @@ const DEMOS=[
     oppShots:16,xGa:null,oppGoals:1,oppAttacks:null,pressureRegains:null,
     dodPlusMinus:null,oppCorners:8,oppSetPieces:11,
     players:[
-      {name:"(1) H. Sørlie",jersey:1,isStabek:true,pos:"GK",total:82,plus:4,minus:0,efficiency:4,smart_pass:12,duel_def:0,duel_press:0,shot:0,v1:0,counterattack:0,assists:0,clearances:2,gk_save:1,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:0,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(3) E. Varvin-Kvamme",jersey:3,isStabek:true,pos:"CB",total:66,plus:9,minus:6,efficiency:3,smart_pass:29,duel_def:7,duel_press:0,shot:0,v1:17,counterattack:1,assists:0,clearances:1,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:17,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(22) E. Riis-Eriksen",jersey:22,isStabek:true,pos:"CM",total:89,plus:3,minus:10,efficiency:-7,smart_pass:50,duel_def:8,duel_press:0,shot:0,v1:12,counterattack:0,assists:0,clearances:1,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:12,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(25) P. Hanche-Olsen",jersey:25,isStabek:true,pos:"CM",total:81,plus:5,minus:4,efficiency:1,smart_pass:31,duel_def:2,duel_press:0,shot:0,v1:9,counterattack:0,assists:0,clearances:4,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:9,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(18) O. Essayas",jersey:18,isStabek:true,pos:"AM",total:72,plus:9,minus:6,efficiency:3,smart_pass:43,duel_def:10,duel_press:0,shot:1,v1:18,counterattack:0,assists:0,clearances:4,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:18,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(20) L. Riis-Eriksen",jersey:20,isStabek:true,pos:"WB",total:62,plus:9,minus:10,efficiency:-1,smart_pass:22,duel_def:11,duel_press:0,shot:1,v1:19,counterattack:0,assists:0,clearances:2,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:19,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(16) S. Velten-Simonsen",jersey:16,isStabek:true,pos:"WB",total:61,plus:5,minus:7,efficiency:-2,smart_pass:21,duel_def:6,duel_press:0,shot:1,v1:23,counterattack:1,assists:0,clearances:0,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:23,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(10) S. Osman",jersey:10,isStabek:true,pos:"AM",total:60,plus:6,minus:4,efficiency:2,smart_pass:23,duel_def:5,duel_press:0,shot:1,v1:14,counterattack:2,assists:0,clearances:1,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:14,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(15) C. Bachke",jersey:15,isStabek:true,pos:"FW",total:58,plus:9,minus:12,efficiency:-3,smart_pass:11,duel_def:3,duel_press:0,shot:4,v1:24,counterattack:2,assists:0,clearances:0,gk_save:0,shots:4,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:24,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(9) M. Kjos",jersey:9,isStabek:true,pos:"FW",total:48,plus:5,minus:6,efficiency:-1,smart_pass:11,duel_def:1,duel_press:0,shot:6,v1:13,counterattack:1,assists:0,clearances:3,gk_save:0,shots:6,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:13,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"(14) H. Hytterød",jersey:14,isStabek:true,pos:"WB",total:34,plus:3,minus:3,efficiency:0,smart_pass:10,duel_def:3,duel_press:0,shot:1,v1:4,counterattack:0,assists:0,clearances:3,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:4,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null}
+      {name:"(1) H. Sørlie",jersey:1,isStabek:true,isStarter:true,minutes_played:90,pos:"GK",total:82,plus:4,minus:0,efficiency:4,smart_pass:12,duel_def:0,duel_press:0,shot:0,v1:0,counterattack:0,assists:0,clearances:2,gk_save:1,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:0,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(3) E. Varvin-Kvamme",jersey:3,isStabek:true,isStarter:true,minutes_played:90,pos:"CB",total:66,plus:9,minus:6,efficiency:3,smart_pass:29,duel_def:7,duel_press:0,shot:0,v1:17,counterattack:1,assists:0,clearances:1,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:17,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(22) E. Riis-Eriksen",jersey:22,isStabek:true,isStarter:true,minutes_played:90,pos:"CM",total:89,plus:3,minus:10,efficiency:-7,smart_pass:50,duel_def:8,duel_press:0,shot:0,v1:12,counterattack:0,assists:0,clearances:1,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:12,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(25) P. Hanche-Olsen",jersey:25,isStabek:true,isStarter:true,minutes_played:90,pos:"CM",total:81,plus:5,minus:4,efficiency:1,smart_pass:31,duel_def:2,duel_press:0,shot:0,v1:9,counterattack:0,assists:0,clearances:4,gk_save:0,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:9,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(18) O. Essayas",jersey:18,isStabek:true,isStarter:true,minutes_played:90,pos:"AM",total:72,plus:9,minus:6,efficiency:3,smart_pass:43,duel_def:10,duel_press:0,shot:1,v1:18,counterattack:0,assists:0,clearances:4,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:18,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(20) L. Riis-Eriksen",jersey:20,isStabek:true,isStarter:true,minutes_played:90,pos:"WB",total:62,plus:9,minus:10,efficiency:-1,smart_pass:22,duel_def:11,duel_press:0,shot:1,v1:19,counterattack:0,assists:0,clearances:2,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:19,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(16) S. Velten-Simonsen",jersey:16,isStabek:true,isStarter:true,minutes_played:90,pos:"WB",total:61,plus:5,minus:7,efficiency:-2,smart_pass:21,duel_def:6,duel_press:0,shot:1,v1:23,counterattack:1,assists:0,clearances:0,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:23,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(10) S. Osman",jersey:10,isStabek:true,isStarter:true,minutes_played:90,pos:"AM",total:60,plus:6,minus:4,efficiency:2,smart_pass:23,duel_def:5,duel_press:0,shot:1,v1:14,counterattack:2,assists:0,clearances:1,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:14,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(15) C. Bachke",jersey:15,isStabek:true,isStarter:true,minutes_played:90,pos:"FW",total:58,plus:9,minus:12,efficiency:-3,smart_pass:11,duel_def:3,duel_press:0,shot:4,v1:24,counterattack:2,assists:0,clearances:0,gk_save:0,shots:4,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:24,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(9) M. Kjos",jersey:9,isStabek:true,isStarter:true,minutes_played:90,pos:"FW",total:48,plus:5,minus:6,efficiency:-1,smart_pass:11,duel_def:1,duel_press:0,shot:6,v1:13,counterattack:1,assists:0,clearances:3,gk_save:0,shots:6,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:13,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"(14) H. Hytterød",jersey:14,isStabek:true,isStarter:false,minutes_played:45,pos:"WB",total:34,plus:3,minus:3,efficiency:0,smart_pass:10,duel_def:3,duel_press:0,shot:1,v1:4,counterattack:0,assists:0,clearances:3,gk_save:0,shots:1,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:4,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null}
     ]
   },
   {
@@ -528,20 +590,20 @@ const DEMOS=[
     oppShots:9,xGa:0.69,oppGoals:2,oppAttacks:null,pressureRegains:70,
     dodPlusMinus:2,oppCorners:3,oppSetPieces:5,
     players:[
-      {name:"William Neiden",jersey:6,isStabek:true,pos:"CM",shots:3,goals:0,xG_player:0.14,key_passes:4,assists:2,xGChain:2.31,xG_buildup:1.59,pressures:9,tackles:0,interceptions:0,clearances:0,dribbles:3,dispossessions:4,passes_into_box:3,final_third_passes:27,pass_pct:85,touches_in_box:10,shot:3,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Ludvig Slæperud",jersey:10,isStabek:true,pos:"CM",shots:6,goals:0,xG_player:0.28,key_passes:4,assists:2,xGChain:2.15,xG_buildup:1.92,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:3,dispossessions:2,passes_into_box:1,final_third_passes:43,pass_pct:81,touches_in_box:5,shot:6,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Nicolai Hageland",jersey:21,isStabek:true,pos:"CB",shots:1,goals:0,xG_player:0.01,key_passes:1,assists:0,xGChain:1.85,xG_buildup:1.85,pressures:15,tackles:1,interceptions:0,clearances:4,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:22,pass_pct:84,touches_in_box:0,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Max Hammerich",jersey:9,isStabek:true,pos:"FW",shots:4,goals:3,xG_player:1.0,key_passes:2,assists:1,xGChain:1.64,xG_buildup:0.1,pressures:31,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:5,pass_pct:90,touches_in_box:10,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Frantz Johannessen",jersey:18,isStabek:true,pos:"WB",shots:1,goals:0,xG_player:0.14,key_passes:2,assists:0,xGChain:1.5,xG_buildup:1.33,pressures:25,tackles:4,interceptions:0,clearances:0,dribbles:2,dispossessions:1,passes_into_box:1,final_third_passes:22,pass_pct:81,touches_in_box:12,shot:1,v1:2,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Oliver Lerdrup",jersey:7,isStabek:true,pos:"AM",shots:6,goals:1,xG_player:0.71,key_passes:3,assists:0,xGChain:1.48,xG_buildup:1.14,pressures:26,tackles:0,interceptions:0,clearances:0,dribbles:1,dispossessions:3,passes_into_box:0,final_third_passes:9,pass_pct:61,touches_in_box:13,shot:6,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Carl-Alexander Forsström",jersey:3,isStabek:true,pos:"CB",shots:0,goals:0,xG_player:0.0,key_passes:3,assists:0,xGChain:1.39,xG_buildup:1.04,pressures:18,tackles:6,interceptions:0,clearances:1,dribbles:3,dispossessions:2,passes_into_box:4,final_third_passes:26,pass_pct:85,touches_in_box:0,shot:0,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Markus Skjellvik",jersey:19,isStabek:true,pos:"FW",shots:1,goals:1,xG_player:0.49,key_passes:0,assists:0,xGChain:1.23,xG_buildup:0.74,pressures:13,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:0,final_third_passes:6,pass_pct:76,touches_in_box:2,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Jacob Wallace",jersey:8,isStabek:true,pos:"CM",shots:4,goals:0,xG_player:0.27,key_passes:0,assists:0,xGChain:1.08,xG_buildup:0.92,pressures:6,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:0,final_third_passes:14,pass_pct:80,touches_in_box:2,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Edvard Bull-Rostrup",jersey:2,isStabek:true,pos:"CB",shots:1,goals:0,xG_player:0.06,key_passes:1,assists:0,xGChain:1.02,xG_buildup:1.02,pressures:15,tackles:4,interceptions:0,clearances:5,dribbles:1,dispossessions:1,passes_into_box:2,final_third_passes:17,pass_pct:97,touches_in_box:3,shot:1,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Steinar Wangen",jersey:11,isStabek:true,pos:"WB",shots:1,goals:1,xG_player:0.28,key_passes:0,assists:0,xGChain:0.63,xG_buildup:0.63,pressures:20,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:1,final_third_passes:9,pass_pct:65,touches_in_box:6,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Sigurd Oppedal",jersey:70,isStabek:true,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.62,xG_buildup:0.62,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:2,final_third_passes:9,pass_pct:81,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Nicolas Da Rocha",jersey:12,isStabek:true,pos:"GK",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.35,xG_buildup:0.35,pressures:0,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:0,pass_pct:74,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
-      {name:"Altin Kocani",jersey:27,isStabek:true,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:1,assists:0,xGChain:0.29,xG_buildup:0.29,pressures:8,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:1,final_third_passes:3,pass_pct:100,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null}
+      {name:"William Neiden",jersey:6,isStabek:true,isStarter:true,minutes_played:90,pos:"CM",shots:3,goals:0,xG_player:0.14,key_passes:4,assists:2,xGChain:2.31,xG_buildup:1.59,pressures:9,tackles:0,interceptions:0,clearances:0,dribbles:3,dispossessions:4,passes_into_box:3,final_third_passes:27,pass_pct:85,touches_in_box:10,shot:3,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Ludvig Slæperud",jersey:10,isStabek:true,isStarter:true,minutes_played:90,pos:"CM",shots:6,goals:0,xG_player:0.28,key_passes:4,assists:2,xGChain:2.15,xG_buildup:1.92,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:3,dispossessions:2,passes_into_box:1,final_third_passes:43,pass_pct:81,touches_in_box:5,shot:6,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Nicolai Hageland",jersey:21,isStabek:true,isStarter:true,minutes_played:90,pos:"CB",shots:1,goals:0,xG_player:0.01,key_passes:1,assists:0,xGChain:1.85,xG_buildup:1.85,pressures:15,tackles:1,interceptions:0,clearances:4,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:22,pass_pct:84,touches_in_box:0,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Max Hammerich",jersey:9,isStabek:true,isStarter:true,minutes_played:78,pos:"FW",shots:4,goals:3,xG_player:1.0,key_passes:2,assists:1,xGChain:1.64,xG_buildup:0.1,pressures:31,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:1,final_third_passes:5,pass_pct:90,touches_in_box:10,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Frantz Johannessen",jersey:18,isStabek:true,isStarter:true,minutes_played:90,pos:"WB",shots:1,goals:0,xG_player:0.14,key_passes:2,assists:0,xGChain:1.5,xG_buildup:1.33,pressures:25,tackles:4,interceptions:0,clearances:0,dribbles:2,dispossessions:1,passes_into_box:1,final_third_passes:22,pass_pct:81,touches_in_box:12,shot:1,v1:2,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Oliver Lerdrup",jersey:7,isStabek:true,isStarter:true,minutes_played:90,pos:"AM",shots:6,goals:1,xG_player:0.71,key_passes:3,assists:0,xGChain:1.48,xG_buildup:1.14,pressures:26,tackles:0,interceptions:0,clearances:0,dribbles:1,dispossessions:3,passes_into_box:0,final_third_passes:9,pass_pct:61,touches_in_box:13,shot:6,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Carl-Alexander Forsström",jersey:3,isStabek:true,isStarter:true,minutes_played:90,pos:"CB",shots:0,goals:0,xG_player:0.0,key_passes:3,assists:0,xGChain:1.39,xG_buildup:1.04,pressures:18,tackles:6,interceptions:0,clearances:1,dribbles:3,dispossessions:2,passes_into_box:4,final_third_passes:26,pass_pct:85,touches_in_box:0,shot:0,v1:3,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Markus Skjellvik",jersey:19,isStabek:true,isStarter:true,minutes_played:45,pos:"FW",shots:1,goals:1,xG_player:0.49,key_passes:0,assists:0,xGChain:1.23,xG_buildup:0.74,pressures:13,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:0,final_third_passes:6,pass_pct:76,touches_in_box:2,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Jacob Wallace",jersey:8,isStabek:true,isStarter:false,minutes_played:45,pos:"CM",shots:4,goals:0,xG_player:0.27,key_passes:0,assists:0,xGChain:1.08,xG_buildup:0.92,pressures:6,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:0,final_third_passes:14,pass_pct:80,touches_in_box:2,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Edvard Bull-Rostrup",jersey:2,isStabek:true,isStarter:true,minutes_played:83,pos:"CB",shots:1,goals:0,xG_player:0.06,key_passes:1,assists:0,xGChain:1.02,xG_buildup:1.02,pressures:15,tackles:4,interceptions:0,clearances:5,dribbles:1,dispossessions:1,passes_into_box:2,final_third_passes:17,pass_pct:97,touches_in_box:3,shot:1,v1:1,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Steinar Wangen",jersey:11,isStabek:true,isStarter:true,minutes_played:52,pos:"WB",shots:1,goals:1,xG_player:0.28,key_passes:0,assists:0,xGChain:0.63,xG_buildup:0.63,pressures:20,tackles:2,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:1,final_third_passes:9,pass_pct:65,touches_in_box:6,shot:1,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Sigurd Oppedal",jersey:70,isStabek:true,isStarter:false,minutes_played:45,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.62,xG_buildup:0.62,pressures:10,tackles:1,interceptions:0,clearances:0,dribbles:0,dispossessions:2,passes_into_box:2,final_third_passes:9,pass_pct:81,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Nicolas Da Rocha",jersey:12,isStabek:true,isStarter:true,minutes_played:90,pos:"GK",shots:0,goals:0,xG_player:0.0,key_passes:0,assists:0,xGChain:0.35,xG_buildup:0.35,pressures:0,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:0,passes_into_box:0,final_third_passes:0,pass_pct:74,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},
+      {name:"Altin Kocani",jersey:27,isStabek:true,isStarter:false,minutes_played:12,pos:"FW",shots:0,goals:0,xG_player:0.0,key_passes:1,assists:0,xGChain:0.29,xG_buildup:0.29,pressures:8,tackles:0,interceptions:0,clearances:0,dribbles:0,dispossessions:1,passes_into_box:1,final_third_passes:3,pass_pct:100,touches_in_box:1,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null}
     ]
   }
 ];
@@ -550,115 +612,512 @@ const DEMOS=[
 function ev(val,t,op){if(val===null||val===undefined||val==="")return"na";const v=+val,tg=+t;if(op===">")return v>tg?"pass":"fail";if(op===">=")return v>=tg?"pass":"fail";if(op==="<")return v<tg?"pass":"fail";if(op==="<=")return v<=tg?"pass":"fail";return"na";}
 const SS={pass:{c:T.green,bg:T.green+"18",sym:"✓"},fail:{c:T.red,bg:T.red+"18",sym:"✗"},na:{c:T.muted,bg:"transparent",sym:"—"}};
 const opS={">":">",">=":"≥","<":"<","<=":"≤"};
+function per90(val,mins){if(!val||!mins||mins<1)return null;return Math.round(val/mins*90*10)/10;}
+function fmt90(val,mins,raw){if(raw)return val??null;return per90(val,mins);}
 function SrcTag({s}){const C={pdf:{l:"StatsBomb PDF",c:T.amber},team:{l:"Team XML",c:T.blue},player:{l:"Spiller XML",c:T.green}};const x=C[s]||C.team;return<span style={{background:x.c+"18",border:`1px solid ${x.c}44`,borderRadius:20,padding:"1px 8px",fontSize:9,fontWeight:700,color:x.c}}>{x.l}</span>;}
 function Stat({label,val,color=T.muted,bold}){return<div style={{fontSize:11}}><span style={{color:T.muted}}>{label} </span><span style={{color,fontWeight:bold?800:600}}>{val??"-"}</span></div>;}
 function Bar({v,max,color}){return<div style={{height:3,background:T.border,borderRadius:2,overflow:"hidden",marginTop:3}}><div style={{height:"100%",width:`${Math.min(100,(v/Math.max(max,1))*100)}%`,background:color,borderRadius:2}}/></div>;}
 const btnSt=(c,g=false)=>({background:g?"transparent":c+"18",border:`1px solid ${c}`,borderRadius:6,padding:"5px 14px",color:g?T.muted:c,cursor:"pointer",fontSize:11,fontWeight:700,fontFamily:"'Syne',sans-serif",letterSpacing:"0.05em"});
 
+/* ── Player Modal ────────────────────────────────────────────────── */
+function PlayerModal({player,match,onClose}){
+  const {useState:us}=React;
+  const[tab,setTab]=us("angrep");
+  const[per90mode,setPer90]=us(false);
+  const src=match.source;
+  const pos=player.pos;
+  const mins=player.minutes_played||90;
+  const rk=(ROLE_KPIS[pos]||{})[src]||[];
+  const kPass=rk.filter(k=>ev(player[k.id],k.t,k.op)==="pass").length;
+  const kTot=rk.filter(k=>ev(player[k.id],k.t,k.op)!=="na").length;
+  const pC=kTot===0?T.border:kPass===kTot?T.green:kPass===0?T.red:T.amber;
+
+  const PHASE_MAP={angrep:"angrep",forsvar:"forsvar",omstilling:"omstilling",generelt:"generelt"};
+  const PHASE_LABELS={angrep:"Angrepsfase",forsvar:"Forsvarsfase",omstilling:"Omstilling",generelt:"Generelt"};
+  const PHASE_COLORS={angrep:T.green,forsvar:T.blue,omstilling:T.amber,generelt:T.muted};
+
+  const tabs=[["angrep","Angrepsfase"],["forsvar","Forsvarsfase"],["omstilling","Omstilling"],["stats","All statistikk"]];
+
+  // Phase descriptions from fagplan
+  const PHASE_DESC={
+    GK:{
+      angrep:"Keeper som playmaker: Starter angrepsspillet med trygge, målrettede distribusjoner. Trekker press mot seg for å frigjøre medspillere (A1). Tar grep om tempo og rytme i angrepsspillet.",
+      forsvar:"Skuddstopper og sjef i boks: Posisjonerer for å hindre mål (F3). Leder bakre fire og sentrale midtbane i det defensive arbeidet. Uredd i 1v1-situasjoner.",
+      omstilling:"Umiddelbar reaksjon etter balltap: Coaching av bakre ledd. Oppfatter kontringsmuligheter tidlig og starter angrep raskt ved gjenvinning.",
+    },
+    CB:{
+      angrep:"Bygger opp fra bak: Leder bakre ledd og midtbane i posisjonering (A1). Smarte pasninger som starter angrepsspill. Dribler forbi pressledd og skaper ubalanse med fremover-bevegelse.",
+      forsvar:"Vinner dueller — holder linjene: Leder bakre fire i høyt og lavt press (F1/F2). Forsvarsberedskap når vi angriper. Hindrer gjennombrudd mot scoreboks (F3).",
+      omstilling:"Omstillingsdyktighet: Identifiserer kontrollnivå hos motstander. Som 1F: vinner duell eller hindrer kontring. Som 2-3F: ettertrykk og posisjonsjustering.",
+    },
+    WB:{
+      angrep:"Skaffer seg overtal fra kant: Repetert sprint for å bli bakromstrussel (A2). Kombinerer innover i boks med veggspill og tredjemann. Innlegg etter støtte og fra sidekorridor.",
+      forsvar:"Defensivt bidrag: Vinner 1v1 på kant (F1/F2). Nekte truende innlegg. Leder lagets struktur på sin side. Hurtig forflytning og pumping.",
+      omstilling:"Skaper ubalanse med bevegelse: Evne til å vurdere risiko/potensial. Spiller av gjenvinningspress. Angriper bakrom ved kontring.",
+    },
+    CM:{
+      angrep:"Dikterer med prospektiv kontroll: Krever ballen og har høy forståelse av spill (A1/A2). 'Magic Pass' — forløser rett spiller til rett tid i rett rom. Skaper og utnytter overtallssituasjoner.",
+      forsvar:"Disiplinert omstilling: Umiddelbart etter balltap — aggressivt gjenvinningspress (F1). Kontroll på ansvar med tydelig referanse på motspiller/rom. Balanserende: anker i gjenvinninger.",
+      omstilling:"Høyintensitetsomstilling: Balanserer mellom støtteposisjon og offensiv markering. Viktig koordineringsrolle — kommuniserer bak og foran.",
+    },
+    AM:{
+      angrep:"Skaper sjanser i siste tredel: Kombinerer med veggspill og tredjemann (A2). Avslutter fra mellomrom og distanse (A3). Dribbler fra kant/halvrom og setter opp scoringsrom.",
+      forsvar:"Forsvarsberedskap fra front: Presser fra høy posisjon (F1). Leder fremre ledd i press. Balanserer mellom støtteposisjon og offensiv markering.",
+      omstilling:"Trigger raske overganger: Kontrering mot stor ubalanse. Åpner banen bredt etter gjenvinning. Prioriterer fremover-pasning gjennom pressledd.",
+    },
+    FW:{
+      angrep:"Angriper bakrom og scorer: Utgangsposisjonering med fordel på motstander (A3). Vinner scoringsrom etter innlegg, i bakrom og i 1v1. Jakter retur og 2.baller.",
+      forsvar:"Presser fra front: Setter riktig presshøyde (F1). Leder motstander dit vi vil. Bremser tempo og rytme — motstanders 'godfot'.",
+      omstilling:"Kontringsinitiativ: Leser og reagerer FØR bruddet skjer. Spiller første pasning fremover gjennom pressledd. Åpner banen med høyt og bredt løp.",
+    },
+  };
+
+  const desc=PHASE_DESC[pos]||{};
+  const phaseKpis=tab==="stats"?rk:rk.filter(k=>(PHASE_MAP[k.phase||"generelt"]===tab||tab==="generelt"));
+
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(3,12,24,0.93)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}
+      onClick={(e)=>{if(e.target===e.currentTarget)onClose();}}>
+      <div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:14,
+        width:"100%",maxWidth:640,maxHeight:"88vh",overflow:"hidden",display:"flex",flexDirection:"column",
+        boxShadow:"0 32px 80px rgba(0,0,0,0.8)"}}>
+
+        {/* Modal header */}
+        <div style={{padding:"14px 18px",borderBottom:`1px solid ${T.border}`,
+          background:"linear-gradient(160deg,#040f1c,#08192e)",flexShrink:0}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+            <div>
+              <div style={{fontSize:9,color:POS_COLOR[pos]||T.blue,letterSpacing:"0.14em",
+                textTransform:"uppercase",marginBottom:2}}>{POS_LABEL[pos]||pos} · {match.competition}</div>
+              <div style={{fontSize:20,fontWeight:800,color:T.text}}>{player.name}</div>
+              <div style={{display:"flex",gap:10,alignItems:"center",marginTop:4,flexWrap:"wrap"}}>
+                {player.isStarter
+                  ?<span style={{background:T.green+"18",border:`1px solid ${T.green}44`,borderRadius:20,padding:"1px 8px",fontSize:9,fontWeight:700,color:T.green}}>Starter</span>
+                  :<span style={{background:T.amber+"18",border:`1px solid ${T.amber}44`,borderRadius:20,padding:"1px 8px",fontSize:9,fontWeight:700,color:T.amber}}>Innbytter</span>
+                }
+                <span style={{fontSize:12,color:T.muted}}>⏱ {mins||"?"} min</span>
+                {kTot>0&&<span style={{fontSize:11,fontWeight:700,color:pC,background:pC+"18",borderRadius:20,padding:"2px 9px"}}>{kPass}/{kTot} rollekrav</span>}
+              </div>
+            </div>
+            <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
+              <button onClick={()=>setPer90(!per90mode)}
+                style={{background:per90mode?T.purple+"18":"transparent",border:`1px solid ${per90mode?T.purple:T.border}`,
+                  borderRadius:6,padding:"4px 10px",color:per90mode?T.purple:T.muted,cursor:"pointer",fontSize:10,fontWeight:700,fontFamily:"inherit"}}>
+                {per90mode?"P90 ✓":"P90"}
+              </button>
+              <button onClick={onClose}
+                style={{background:"transparent",border:`1px solid ${T.border}`,borderRadius:6,
+                  width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",
+                  color:T.muted,cursor:"pointer",fontSize:16,lineHeight:1}}>✕</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Phase tabs */}
+        <div style={{display:"flex",borderBottom:`1px solid ${T.border}`,flexShrink:0,overflowX:"auto"}}>
+          {tabs.map(([id,lbl])=>(
+            <button key={id} onClick={()=>setTab(id)} style={{
+              background:"transparent",border:"none",
+              borderBottom:`2.5px solid ${tab===id?(id==="angrep"?T.green:id==="forsvar"?T.blue:id==="omstilling"?T.amber:T.blueL):"transparent"}`,
+              padding:"7px 14px 8px",color:tab===id?T.text:T.muted,cursor:"pointer",
+              fontSize:10,fontWeight:700,fontFamily:"inherit",letterSpacing:"0.08em",
+              textTransform:"uppercase",whiteSpace:"nowrap",
+            }}>{lbl}</button>
+          ))}
+        </div>
+
+        {/* Modal content */}
+        <div style={{overflowY:"auto",padding:"16px 18px",flex:1}}>
+
+          {/* Phase description from fagplan */}
+          {tab!=="stats"&&desc[tab]&&(
+            <div style={{background:T.card2,border:`1px solid ${T.border}`,borderRadius:8,
+              padding:"10px 14px",marginBottom:14,fontSize:11,color:T.text,lineHeight:1.7}}>
+              <div style={{fontSize:9,color:PHASE_COLORS[tab]||T.muted,letterSpacing:"0.12em",
+                textTransform:"uppercase",fontWeight:700,marginBottom:4}}>
+                Fagplan — {PHASE_LABELS[tab]||tab}
+              </div>
+              {desc[tab]}
+            </div>
+          )}
+
+          {/* KPI checklist for this phase */}
+          {tab!=="stats"&&(
+            <div style={{marginBottom:14}}>
+              {phaseKpis.length===0&&(
+                <div style={{fontSize:11,color:T.muted,fontStyle:"italic",padding:"8px 0"}}>
+                  Ingen målbare krav for denne fasen med {src}-data.
+                </div>
+              )}
+              {phaseKpis.map((k,i)=>{
+                const rawVal=player[k.id];
+                const dispVal=per90mode&&mins?per90(rawVal,mins):rawVal;
+                const s=ev(rawVal,k.t,k.op);
+                const ss=SS[s];
+                return(
+                  <div key={k.id} style={{display:"flex",alignItems:"flex-start",gap:8,
+                    padding:"7px 0",borderBottom:i<phaseKpis.length-1?`1px solid ${T.border}22`:"none"}}>
+                    <div style={{width:18,height:18,borderRadius:"50%",flexShrink:0,
+                      border:`1.5px solid ${ss.c}`,background:ss.bg,
+                      display:"flex",alignItems:"center",justifyContent:"center",
+                      fontSize:8,fontWeight:800,color:ss.c,marginTop:1}}>{ss.sym}</div>
+                    <div style={{flex:1}}>
+                      <div style={{fontSize:12,color:T.text}}>{k.label}</div>
+                      {k.info&&<div style={{fontSize:10,color:T.muted,marginTop:1,lineHeight:1.4}}>{k.info}</div>}
+                    </div>
+                    <div style={{textAlign:"right",flexShrink:0}}>
+                      <div style={{fontSize:10,color:T.muted}}>{opS[k.op]}{k.t}</div>
+                      <div style={{fontSize:16,fontWeight:800,color:s==="na"?T.muted:ss.c}}>
+                        {rawVal!=null?(per90mode&&mins?<span title={`Rå: ${rawVal}`}>{dispVal}<span style={{fontSize:8,color:T.muted}}>/90</span></span>:rawVal):"—"}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* All stats view */}
+          {tab==="stats"&&(
+            <div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 16px"}}>
+                {src==="pdf"&&[
+                  ["xGChain",player.xGChain,T.amber],["xG",player.xG_player,T.green],
+                  ["Avslutninger",player.shots,T.red],["Nøkkelpasn.",player.key_passes,T.blueL],
+                  ["Assists",player.assists,T.green],["xG Buildup",player.xG_buildup,T.amber],
+                  ["Taklinger",player.tackles,T.blue],["Interceptions",player.interceptions,T.blue],
+                  ["Klaringer",player.clearances,T.blue],["Driblinger",player.dribbles,T.purple],
+                  ["Dispossessions",player.dispossessions,T.red],["Press",player.pressures,T.amber],
+                  ["Pasn. i boks",player.passes_into_box,T.blueL],["Touch i boks",player.touches_in_box,T.blueL],
+                  ["Pass%",player.pass_pct!=null?`${player.pass_pct}%`:null,T.muted],["Pasn. siste 3.",player.final_third_passes,T.muted],
+                ].map(([l,v,c])=>(
+                  <div key={l} style={{padding:"5px 0",borderBottom:`1px solid ${T.border}18`}}>
+                    <span style={{fontSize:10,color:T.muted}}>{l} </span>
+                    <span style={{fontWeight:700,color:c}}>{v??"-"}</span>
+                    {per90mode&&mins&&v!=null&&typeof v==="number"&&<span style={{fontSize:9,color:T.muted,marginLeft:4}}>({per90(v,mins)}/90)</span>}
+                  </div>
+                ))}
+                {src==="player"&&[
+                  ["Aksjoner",player.total,T.blueL],["Effektivitet",player.efficiency!=null?(player.efficiency>=0?`+${player.efficiency}`:player.efficiency):null,(player.efficiency||0)>=0?T.green:T.red],
+                  ["Smart pass",player.smart_pass,T.amber],["Avslutninger",player.shot,T.red],
+                  ["1v1 dueller",player.v1,T.purple],["Def. dueller",player.duel_def,T.blue],
+                  ["Press-dueller",player.duel_press,T.blue],["Kontringsinitiativ",player.counterattack,T.amber],
+                  ["Klaringer",player.clearances,T.blue],["GK-redninger",player.gk_save,T.amber],
+                ].map(([l,v,c])=>(
+                  <div key={l} style={{padding:"5px 0",borderBottom:`1px solid ${T.border}18`}}>
+                    <span style={{fontSize:10,color:T.muted}}>{l} </span>
+                    <span style={{fontWeight:700,color:c}}>{v??"-"}</span>
+                    {per90mode&&mins&&v!=null&&typeof v==="number"&&<span style={{fontSize:9,color:T.muted,marginLeft:4}}>({per90(v,mins)}/90)</span>}
+                  </div>
+                ))}
+                {src==="team"&&[
+                  ["Sekvenser",player.total,T.blueL],["Siste tredel %",player.finalThirdP!=null?`${player.finalThirdP}%`:null,T.amber],
+                  ["Avslut-seq.",player.shot,T.red],["Høye overg.",player.highTrans,T.purple],
+                ].map(([l,v,c])=>(
+                  <div key={l} style={{padding:"5px 0",borderBottom:`1px solid ${T.border}18`}}>
+                    <span style={{fontSize:10,color:T.muted}}>{l} </span>
+                    <span style={{fontWeight:700,color:c}}>{v??"-"}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Team KPI View ───────────────────────────────────────────────── */
 function TeamKPIView({m,onUpdate}){
-  const[ek,setEk]=useState(null);
-  let pass=0,total=0;TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(m[k.id],k.t,k.op);if(s!=="na"){total++;if(s==="pass")pass++;}}));
-  return(<div>
-    <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:14,flexWrap:"wrap"}}><SrcTag s={m.source}/><span style={{fontSize:11,color:T.muted}}>{pass}/{total} KPIer</span></div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(255px,1fr))",gap:10}}>
-      {TEAM_KPIS.map(g=>{
-        const items=g.items.filter(k=>k.src.includes(m.source)||k.manual);if(!items.length)return null;
-        const gP=items.filter(k=>ev(m[k.id],k.t,k.op)==="pass").length;const gT=items.filter(k=>ev(m[k.id],k.t,k.op)!=="na").length;
-        const tC=gT===0?T.border:gP===gT?T.green:gP===0?T.red:T.amber;
-        return(<div key={g.id} style={{background:T.card,borderRadius:10,border:`1px solid ${T.border}`,borderTop:`3px solid ${tC}`,overflow:"hidden"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 12px",borderBottom:`1px solid ${T.border}`}}>
-            <span style={{fontSize:11,fontWeight:700,letterSpacing:"0.07em",textTransform:"uppercase"}}>{g.label}</span>
-            {gT>0&&<span style={{fontSize:10,fontWeight:700,color:tC,background:tC+"18",borderRadius:20,padding:"1px 8px"}}>{gP}/{gT}</span>}
-          </div>
-          {items.map(k=>{const s=ev(m[k.id],k.t,k.op);const ss=SS[s];const isEd=ek===k.id;return(
+  const{useState:us}=React;
+  const[ek,setEk]=us(null);
+  const[openSections,setOpenSections]=us({angrepsfase:true,forsvarsfase:true});
+
+  const toggle=(s)=>setOpenSections(p=>({...p,[s]:!p[s]}));
+
+  let pass=0,total=0;
+  TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(m[k.id],k.t,k.op);if(s!=="na"){total++;if(s==="pass")pass++;}}));
+
+  const renderGroup=(g)=>{
+    const items=g.items.filter(k=>k.src.includes(m.source)||k.manual);
+    if(!items.length)return null;
+    const gP=items.filter(k=>ev(m[k.id],k.t,k.op)==="pass").length;
+    const gT=items.filter(k=>ev(m[k.id],k.t,k.op)!=="na").length;
+    const tC=gT===0?T.border:gP===gT?T.green:gP===0?T.red:T.amber;
+    return(
+      <div key={g.id} style={{background:T.card,borderRadius:10,border:`1px solid ${T.border}`,borderTop:`3px solid ${tC}`,overflow:"hidden",marginBottom:8}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 12px",borderBottom:`1px solid ${T.border}`}}>
+          <span style={{fontSize:11,fontWeight:700,letterSpacing:"0.07em",textTransform:"uppercase"}}>{g.label}</span>
+          {gT>0&&<span style={{fontSize:10,fontWeight:700,color:tC,background:tC+"18",borderRadius:20,padding:"1px 8px"}}>{gP}/{gT}</span>}
+        </div>
+        {items.map(k=>{
+          const s=ev(m[k.id],k.t,k.op);const ss=SS[s];const isEd=ek===k.id;
+          return(
             <div key={k.id} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 12px",borderBottom:`1px solid ${T.border}18`}}>
               <div style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:`1.5px solid ${ss.c}`,background:ss.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:800,color:ss.c}}>{ss.sym}</div>
               <div style={{flex:1,fontSize:12}}>{k.label}{k.manual&&<span style={{color:T.muted,fontSize:9,marginLeft:4}}>manuell</span>}</div>
               <span style={{fontSize:9,color:T.muted}}>{opS[k.op]}{k.t}{k.unit||""}</span>
-              {k.manual&&isEd?<input type="number" defaultValue={m[k.id]} autoFocus onBlur={e=>{onUpdate(k.id,e.target.value===""?"":(+e.target.value));setEk(null);}} style={{width:46,background:T.card2,border:`1px solid ${T.blue}`,borderRadius:4,padding:"1px 4px",color:T.text,fontSize:14,fontWeight:800,fontFamily:"inherit",textAlign:"right",outline:"none"}}/>:<span onClick={()=>k.manual&&setEk(k.id)} style={{fontSize:17,fontWeight:800,minWidth:34,textAlign:"right",color:s==="na"?T.muted:ss.c,cursor:k.manual?"pointer":"default"}}>{m[k.id]===null||m[k.id]===undefined||m[k.id]===""?"N/A":`${m[k.id]}${k.unit||""}`}</span>}
+              {k.manual&&isEd
+                ?<input type="number" defaultValue={m[k.id]} autoFocus
+                    onBlur={e=>{onUpdate(k.id,e.target.value===""?"":(+e.target.value));setEk(null);}}
+                    style={{width:46,background:T.card2,border:`1px solid ${T.blue}`,borderRadius:4,padding:"1px 4px",color:T.text,fontSize:14,fontWeight:800,fontFamily:"inherit",textAlign:"right",outline:"none"}}/>
+                :<span onClick={()=>k.manual&&setEk(k.id)} style={{fontSize:17,fontWeight:800,minWidth:34,textAlign:"right",color:s==="na"?T.muted:ss.c,cursor:k.manual?"pointer":"default"}}>
+                    {m[k.id]===null||m[k.id]===undefined||m[k.id]===""?"N/A":`${m[k.id]}${k.unit||""}`}
+                  </span>}
             </div>
-          );})}
-        </div>);
-      })}
-      {[[m.source==="pdf"?"xG":"Høye overg.",m.source==="pdf"?m.xG:m.highTrans,T.amber],["Mål for",m.maal??m.scoreFor,T.green],["Mål mot",m.oppGoals??m.scoreAgainst,T.red],["Possession",m.possession!=null?`${m.possession}%`:"N/A",T.blueL]].map(([l,v,c])=>(
-        <div key={l} style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:8,padding:"10px 12px"}}>
-          <div style={{fontSize:9,color:T.muted,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:3}}>{l}</div>
-          <div style={{fontSize:24,fontWeight:800,color:c}}>{v??"-"}</div>
-        </div>
-      ))}
+          );
+        })}
+      </div>
+    );
+  };
+
+  const phaseScore=(kpis)=>{
+    let p=0,t=0;kpis.forEach(g=>g.items.forEach(k=>{const s=ev(m[k.id],k.t,k.op);if(s!=="na"){t++;if(s==="pass")p++;}}));
+    return{p,t};
+  };
+  const attScore=phaseScore(ATTACK_KPIS);const defScore=phaseScore(DEFENSE_KPIS);
+
+  return(
+    <div>
+      <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:14,flexWrap:"wrap"}}>
+        <SrcTag s={m.source}/>
+        <span style={{fontSize:11,color:T.muted}}>{pass}/{total} KPIer totalt</span>
+      </div>
+
+      {/* ANGREPSFASE */}
+      <div style={{marginBottom:12}}>
+        <button onClick={()=>toggle("angrepsfase")} style={{width:"100%",background:T.green+"12",border:`1px solid ${T.green}44`,borderRadius:10,padding:"10px 14px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:openSections.angrepsfase?8:0}}>
+          <div style={{display:"flex",gap:10,alignItems:"center"}}>
+            <span style={{fontSize:14,fontWeight:800,color:T.green}}>⚽ ANGREPSFASE</span>
+            <span style={{fontSize:11,color:T.green,background:T.green+"18",borderRadius:20,padding:"2px 9px",fontWeight:700}}>{attScore.p}/{attScore.t}</span>
+          </div>
+          <span style={{color:T.green,fontSize:14}}>{openSections.angrepsfase?"▲":"▼"}</span>
+        </button>
+        {openSections.angrepsfase&&(
+          <div style={{paddingLeft:8}}>
+            {ATTACK_KPIS.map(g=>renderGroup(g))}
+          </div>
+        )}
+      </div>
+
+      {/* FORSVARSFASE */}
+      <div style={{marginBottom:12}}>
+        <button onClick={()=>toggle("forsvarsfase")} style={{width:"100%",background:T.blue+"12",border:`1px solid ${T.blue}44`,borderRadius:10,padding:"10px 14px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:openSections.forsvarsfase?8:0}}>
+          <div style={{display:"flex",gap:10,alignItems:"center"}}>
+            <span style={{fontSize:14,fontWeight:800,color:T.blueL}}>🛡 FORSVARSFASE</span>
+            <span style={{fontSize:11,color:T.blueL,background:T.blue+"18",borderRadius:20,padding:"2px 9px",fontWeight:700}}>{defScore.p}/{defScore.t}</span>
+          </div>
+          <span style={{color:T.blueL,fontSize:14}}>{openSections.forsvarsfase?"▲":"▼"}</span>
+        </button>
+        {openSections.forsvarsfase&&(
+          <div style={{paddingLeft:8}}>
+            {DEFENSE_KPIS.map(g=>renderGroup(g))}
+          </div>
+        )}
+      </div>
+
+      {/* Quick tiles */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:8,marginTop:4}}>
+        {[[m.source==="pdf"?"xG":"Høye overg.",m.source==="pdf"?m.xG:m.highTrans,T.amber],
+          ["Mål for",m.maal??m.scoreFor,T.green],["Mål mot",m.oppGoals??m.scoreAgainst,T.red],
+          ["Possession",m.possession!=null?`${m.possession}%`:"N/A",T.blueL],
+          [m.source==="pdf"?"Press-gjenv.":"Siste tredel",m.source==="pdf"?m.pressureRegains:(m.finalThirdP!=null?`${m.finalThirdP}%`:null),T.purple],
+        ].map(([l,v,c])=>(
+          <div key={l} style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:8,padding:"9px 11px"}}>
+            <div style={{fontSize:9,color:T.muted,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:3}}>{l}</div>
+            <div style={{fontSize:22,fontWeight:800,color:c}}>{v??"-"}</div>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>);
+  );
 }
 
 /* ── Player View ─────────────────────────────────────────────────── */
 function PlayerView({m}){
-  const[posOv,setPosOv]=useState({});const[pf,setPf]=useState("all");const src=m.source;
-  const stabPs=m.players.filter(p=>p.isStabek);const filtered=stabPs.filter(p=>pf==="all"||(posOv[p.name]||p.pos)===pf);
-  const maxXgc=Math.max(...stabPs.map(p=>p.xGChain||0),1);const maxEff=Math.max(...stabPs.map(p=>Math.abs(p.efficiency||0)),1);
-  return(<div>
-    <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
-      {["all",...POS_ORDER].map(p=><button key={p} onClick={()=>setPf(p)} style={{background:pf===p?(POS_COLOR[p]||T.blue)+"18":"transparent",border:`1px solid ${pf===p?(POS_COLOR[p]||T.blue):T.border}`,borderRadius:20,padding:"3px 10px",cursor:"pointer",color:pf===p?(POS_COLOR[p]||T.blue):T.muted,fontSize:10,fontWeight:700,fontFamily:"inherit"}}>{p==="all"?"Alle":`${POS_LABEL[p]} (${p})`}</button>)}
-    </div>
-    {src==="team"&&<div style={{background:T.amber+"10",border:`1px solid ${T.amber}30`,borderRadius:7,padding:"7px 12px",marginBottom:12,fontSize:11,color:T.amber}}>Team XML: kun sekvensdata. Last opp Stabæk spiller-XML for fulle individuelle KPIer.</div>}
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(218px,1fr))",gap:9}}>
-      {filtered.map(p=>{
-        const pos=posOv[p.name]||p.pos;const rk=(ROLE_KPIS[pos]||{})[src]||[];
-        const kPass=rk.filter(k=>ev(p[k.id],k.t,k.op)==="pass").length;const kTot=rk.filter(k=>ev(p[k.id],k.t,k.op)!=="na").length;const pC=kTot===0?T.border:kPass===kTot?T.green:kPass===0?T.red:T.amber;
-        return(<div key={p.name} style={{background:T.card,border:`1px solid ${T.border}`,borderLeft:`3px solid ${POS_COLOR[pos]||T.blue}`,borderRadius:8,padding:"10px 12px"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:7}}>
-            <div><div style={{fontSize:9,color:POS_COLOR[pos]||T.blue,letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:1}}>{POS_LABEL[pos]||pos}</div><div style={{fontSize:13,fontWeight:700,lineHeight:1.2}}>{p.name}</div></div>
-            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3}}>
-              {kTot>0&&<span style={{fontSize:10,fontWeight:700,color:pC,background:pC+"18",borderRadius:20,padding:"1px 7px"}}>{kPass}/{kTot}</span>}
-              <select value={pos} onChange={e=>setPosOv(prev=>({...prev,[p.name]:e.target.value}))} style={{background:T.border,border:"none",borderRadius:4,color:T.text,fontSize:9,fontFamily:"inherit",padding:"2px 4px",cursor:"pointer"}}>{POS_ORDER.map(po=><option key={po} value={po}>{po}</option>)}</select>
-            </div>
+  const{useState:us}=React;
+  const[posOv,setPosOv]=us({});
+  const[pf,setPf]=us("all");
+  const[selPlayer,setSelPlayer]=us(null);
+  const src=m.source;
+
+  // Sort: starters first (by minutes desc), then subs (by minutes desc)
+  const stabPlayers=[...m.players.filter(p=>p.isStabek)].sort((a,b)=>{
+    const aS=a.isStarter??true;const bS=b.isStarter??true;
+    if(aS&&!bS)return -1;if(!aS&&bS)return 1;
+    return(b.minutes_played||0)-(a.minutes_played||0);
+  });
+  const filtered=stabPlayers.filter(p=>pf==="all"||(posOv[p.name]||p.pos)===pf);
+  const maxXgc=Math.max(...stabPlayers.map(p=>p.xGChain||0),1);
+  const maxEff=Math.max(...stabPlayers.map(p=>Math.abs(p.efficiency||0)),1);
+
+  return(
+    <div>
+      {selPlayer&&<PlayerModal player={selPlayer} match={m} onClose={()=>setSelPlayer(null)}/>}
+
+      <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
+        {["all",...POS_ORDER].map(p=>(
+          <button key={p} onClick={()=>setPf(p)} style={{
+            background:pf===p?(POS_COLOR[p]||T.blue)+"18":"transparent",
+            border:`1px solid ${pf===p?(POS_COLOR[p]||T.blue):T.border}`,
+            borderRadius:20,padding:"3px 10px",cursor:"pointer",
+            color:pf===p?(POS_COLOR[p]||T.blue):T.muted,fontSize:10,fontWeight:700,fontFamily:"inherit"
+          }}>{p==="all"?"Alle":`${POS_LABEL[p]} (${p})`}</button>
+        ))}
+      </div>
+
+      {src==="team"&&(
+        <div style={{background:T.amber+"10",border:`1px solid ${T.amber}30`,borderRadius:7,padding:"7px 12px",marginBottom:12,fontSize:11,color:T.amber}}>
+          Team XML: kun sekvensdata. Last opp Stabæk spiller-XML for fulle individuelle KPIer.
+        </div>
+      )}
+
+      {/* Starter / Sub divider */}
+      {stabPlayers.some(p=>p.isStarter===false)&&(
+        <div style={{fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:T.muted,marginBottom:8}}>
+          ◆ Startende ellever
+        </div>
+      )}
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(208px,1fr))",gap:9}}>
+        {filtered.map((p,idx)=>{
+          const pos=posOv[p.name]||p.pos;
+          const rk=(ROLE_KPIS[pos]||{})[src]||[];
+          const kPass=rk.filter(k=>ev(p[k.id],k.t,k.op)==="pass").length;
+          const kTot=rk.filter(k=>ev(p[k.id],k.t,k.op)!=="na").length;
+          const pC=kTot===0?T.border:kPass===kTot?T.green:kPass===0?T.red:T.amber;
+          const mins=p.minutes_played||90;
+          const isFirst=idx===0||(filtered[idx-1]?.isStarter!==false&&p.isStarter===false);
+
+          return(
+            <React.Fragment key={p.name}>
+              {isFirst&&p.isStarter===false&&(
+                <div style={{gridColumn:"1/-1",fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:T.muted,marginTop:8,marginBottom:4,paddingTop:8,borderTop:`1px solid ${T.border}`}}>
+                  ◆ Innbyttere
+                </div>
+              )}
+              <div onClick={()=>setSelPlayer(p)}
+                style={{background:T.card,border:`1px solid ${T.border}`,
+                  borderLeft:`3px solid ${POS_COLOR[pos]||T.blue}`,borderRadius:8,padding:"10px 12px",
+                  cursor:"pointer",transition:"border-color .15s",
+                  opacity:p.isStarter===false?0.85:1}}
+                onMouseEnter={e=>e.currentTarget.style.borderColor=POS_COLOR[pos]||T.blue}
+                onMouseLeave={e=>e.currentTarget.style.borderColor=T.border}>
+
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
+                  <div>
+                    <div style={{fontSize:9,color:POS_COLOR[pos]||T.blue,letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:1}}>
+                      {POS_LABEL[pos]||pos}
+                      {p.isStarter===false&&<span style={{color:T.amber,marginLeft:5}}>↑{90-(p.minutes_played||0)}'</span>}
+                      {p.isStarter!==false&&p.minutes_played&&p.minutes_played<90&&<span style={{color:T.muted,marginLeft:5}}>→{p.minutes_played}'</span>}
+                    </div>
+                    <div style={{fontSize:13,fontWeight:700,lineHeight:1.2}}>{p.name}</div>
+                    <div style={{fontSize:10,color:T.muted,marginTop:1}}>⏱ {mins} min</div>
+                  </div>
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3}}>
+                    {kTot>0&&<span style={{fontSize:10,fontWeight:700,color:pC,background:pC+"18",borderRadius:20,padding:"1px 7px"}}>{kPass}/{kTot}</span>}
+                    <select value={pos} onClick={e=>e.stopPropagation()}
+                      onChange={e=>setPosOv(prev=>({...prev,[p.name]:e.target.value}))}
+                      style={{background:T.border,border:"none",borderRadius:4,color:T.text,fontSize:9,fontFamily:"inherit",padding:"2px 4px",cursor:"pointer"}}>
+                      {POS_ORDER.map(po=><option key={po} value={po}>{po}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 10px"}}>
+                  {src==="pdf"&&<><Stat label="xGChain" val={p.xGChain} color={T.amber} bold/><Stat label="xG" val={p.xG_player} color={T.green} bold/><Stat label="Avslut." val={p.shots} color={T.red}/><Stat label="Nøkkelp." val={p.key_passes} color={T.blueL}/><Stat label="Press" val={p.pressures} color={T.purple}/><Stat label="Takl." val={p.tackles} color={T.blue}/></>}
+                  {src==="player"&&<><Stat label="Aksjoner" val={p.total} color={T.blueL} bold/><Stat label="Eff." val={p.efficiency!=null?(p.efficiency>=0?`+${p.efficiency}`:p.efficiency):"—"} color={(p.efficiency||0)>=0?T.green:T.red} bold/><Stat label="Smart p." val={p.smart_pass} color={T.amber}/><Stat label="Avslut." val={p.shot} color={T.red}/><Stat label="1v1" val={p.v1} color={T.purple}/><Stat label="Def." val={p.duel_def} color={T.blue}/></>}
+                  {src==="team"&&<><Stat label="Sekvenser" val={p.total} color={T.blueL} bold/><Stat label="Siste 3." val={p.finalThirdP!=null?`${p.finalThirdP}%`:"—"} color={T.amber} bold/><Stat label="Avslut." val={p.shot} color={T.red}/><Stat label="H.overg." val={p.highTrans} color={T.purple}/></>}
+                </div>
+                <div style={{fontSize:9,color:T.muted,marginTop:5,textAlign:"right"}}>Klikk for dyp rapport →</div>
+              </div>
+            </React.Fragment>
+          );
+        })}
+      </div>
+
+      {/* Ranking */}
+      {stabPlayers.length>1&&(
+        <div style={{marginTop:20}}>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,marginBottom:10}}>
+            Rangering — {src==="pdf"?"xGChain":src==="player"?"Effektivitet":"Siste tredel %"}
           </div>
-          {rk.length>0&&<div style={{borderTop:`1px solid ${T.border}`,paddingTop:6,marginBottom:7}}>{rk.map((k,i)=>{const s=ev(p[k.id],k.t,k.op);const ss=SS[s];return(<div key={k.id} style={{display:"flex",alignItems:"flex-start",gap:5,padding:"3px 0",borderBottom:i<rk.length-1?`1px solid ${T.border}15`:"none"}}><span style={{fontSize:8,color:ss.c,fontWeight:800,width:10,flexShrink:0,marginTop:2}}>{ss.sym}</span><div style={{flex:1}}><span style={{fontSize:10,color:s==="na"?T.muted:T.text}}>{k.label}</span>{k.info&&<div style={{fontSize:9,color:T.muted,lineHeight:1.3}}>{k.info}</div>}</div><span style={{fontSize:9,color:T.muted,flexShrink:0}}>{opS[k.op]}{k.t}</span><span style={{fontSize:12,fontWeight:800,color:ss.c,minWidth:24,textAlign:"right",flexShrink:0}}>{p[k.id]!=null?p[k.id]:"—"}</span></div>);})}</div>}
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 10px"}}>
-            {src==="pdf"&&<><Stat label="xGChain" val={p.xGChain} color={T.amber} bold/><Stat label="xG" val={p.xG_player} color={T.green} bold/><Stat label="Avslut." val={p.shots} color={T.red}/><Stat label="Nøkkelp." val={p.key_passes} color={T.blueL}/><Stat label="Press" val={p.pressures} color={T.purple}/><Stat label="Taklinger" val={p.tackles} color={T.blue}/></>}
-            {src==="player"&&<><Stat label="Aksjoner" val={p.total} color={T.blueL} bold/><Stat label="Eff." val={p.efficiency!=null?(p.efficiency>=0?`+${p.efficiency}`:p.efficiency):"—"} color={(p.efficiency||0)>=0?T.green:T.red} bold/><Stat label="Smart p." val={p.smart_pass} color={T.amber}/><Stat label="Avslut." val={p.shot} color={T.red}/><Stat label="1v1" val={p.v1} color={T.purple}/><Stat label="Def.duel" val={p.duel_def} color={T.blue}/></>}
-            {src==="team"&&<><Stat label="Sekvenser" val={p.total} color={T.blueL} bold/><Stat label="Siste 3." val={p.finalThirdP!=null?`${p.finalThirdP}%`:"—"} color={T.amber} bold/><Stat label="Avslut." val={p.shot} color={T.red}/><Stat label="H.overg." val={p.highTrans} color={T.purple}/></>}
-          </div>
-        </div>);
-      })}
+          {[...stabPlayers].sort((a,b)=>{
+            if(src==="pdf")return(b.xGChain||0)-(a.xGChain||0);
+            if(src==="player")return(b.efficiency||0)-(a.efficiency||0);
+            return(b.finalThirdP||0)-(a.finalThirdP||0);
+          }).map((p,i)=>{
+            const pos2=posOv[p.name]||p.pos;
+            const metric=src==="pdf"?(p.xGChain||0):src==="player"?(p.efficiency||0):(p.finalThirdP||0);
+            const col=src==="player"?metric>=0?T.green:T.red:T.amber;
+            const display=src==="pdf"?metric.toFixed(2):src==="player"?(metric>=0?`+${metric}`:metric):`${metric}%`;
+            return(
+              <div key={p.name} style={{display:"flex",alignItems:"center",gap:9,padding:"6px 0",borderBottom:`1px solid ${T.border}22`,cursor:"pointer"}}
+                onClick={()=>setSelPlayer(p)}>
+                <span style={{width:20,fontSize:10,color:T.muted,textAlign:"right"}}>{i+1}</span>
+                <span style={{width:22,height:22,borderRadius:"50%",background:POS_COLOR[pos2]+"18",border:`1px solid ${POS_COLOR[pos2]}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:800,color:POS_COLOR[pos2]}}>{pos2}</span>
+                <span style={{flex:1,fontSize:12,fontWeight:600}}>{p.name}</span>
+                <span style={{fontSize:9,color:T.muted}}>{p.minutes_played||90}min</span>
+                <div style={{width:80}}><Bar v={Math.abs(metric)} max={src==="pdf"?maxXgc:src==="player"?maxEff:100} color={col}/></div>
+                <span style={{width:40,textAlign:"right",fontSize:15,fontWeight:800,color:col}}>{display}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
-    {stabPs.length>1&&<div style={{marginTop:20}}>
-      <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,marginBottom:10}}>Rangering — {src==="pdf"?"xGChain":src==="player"?"Effektivitet":"Siste tredel %"}</div>
-      {[...stabPs].sort((a,b)=>{if(src==="pdf")return(b.xGChain||0)-(a.xGChain||0);if(src==="player")return(b.efficiency||0)-(a.efficiency||0);return(b.finalThirdP||0)-(a.finalThirdP||0);}).map((p,i)=>{
-        const pos2=posOv[p.name]||p.pos;const metric=src==="pdf"?(p.xGChain||0):src==="player"?(p.efficiency||0):(p.finalThirdP||0);const col=src==="player"?metric>=0?T.green:T.red:T.amber;const display=src==="pdf"?metric.toFixed(2):src==="player"?(metric>=0?`+${metric}`:metric):`${metric}%`;
-        return(<div key={p.name} style={{display:"flex",alignItems:"center",gap:9,padding:"6px 0",borderBottom:`1px solid ${T.border}22`}}>
-          <span style={{width:20,fontSize:10,color:T.muted,textAlign:"right"}}>{i+1}</span>
-          <span style={{width:22,height:22,borderRadius:"50%",background:POS_COLOR[pos2]+"18",border:`1px solid ${POS_COLOR[pos2]}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:800,color:POS_COLOR[pos2]}}>{pos2}</span>
-          <span style={{flex:1,fontSize:12,fontWeight:600}}>{p.name}</span>
-          <div style={{width:80}}><Bar v={Math.abs(metric)} max={src==="pdf"?maxXgc:src==="player"?maxEff:100} color={col}/></div>
-          <span style={{width:40,textAlign:"right",fontSize:15,fontWeight:800,color:col}}>{display}</span>
-        </div>);
-      })}
-    </div>}
-  </div>);
+  );
 }
 
 /* ── History View ────────────────────────────────────────────────── */
 function HistoryView({matches,sel,onSel}){
-  return(<div>
-    <div style={{overflowX:"auto"}}>
-      <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:600}}>
-        <thead><tr style={{borderBottom:`2px solid ${T.border}`}}>{["Kamp","Kilde","Dato","Res.","Bes%","Avsl.for","Avsl.mot","xG","KPI"].map(h=><th key={h} style={{padding:"7px 9px",textAlign:"left",fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,fontWeight:700,whiteSpace:"nowrap"}}>{h}</th>)}</tr></thead>
-        <tbody>{matches.map((mx,i)=>{let kp=0,kt=0;TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(mx[k.id],k.t,k.op);if(s!=="na"){kt++;if(s==="pass")kp++;}}));const sc=mx.scoreFor>mx.scoreAgainst?T.green:mx.scoreFor===mx.scoreAgainst?T.amber:T.red;return(<tr key={mx.id} onClick={()=>onSel(i)} style={{borderBottom:`1px solid ${T.border}`,cursor:"pointer",background:sel===i?T.blue+"08":"transparent"}}><td style={{padding:"9px",maxWidth:160,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
-              <div style={{fontWeight:700,fontSize:12,color:T.blueL}}>{mx.stabTeam||mx.filename.split(" vs ")[0]}</div>
-              <div style={{fontSize:10,color:T.muted}}>vs {mx.oppTeam||mx.filename.split(" vs ")[1]||""}</div>
-            </td><td style={{padding:"9px"}}><SrcTag s={mx.source}/></td><td style={{padding:"9px",color:T.muted}}>{mx.date}</td><td style={{padding:"9px"}}><span style={{fontWeight:800,color:sc,fontSize:14}}>{mx.scoreFor}–{mx.scoreAgainst}</span></td><td style={{padding:"9px"}}>{mx.possession!=null?`${mx.possession}%`:"-"}</td><td style={{padding:"9px",color:T.green}}>{mx.avslutninger??"-"}</td><td style={{padding:"9px",color:T.red}}>{mx.oppShots??"-"}</td><td style={{padding:"9px",color:T.amber}}>{mx.xG??"-"}</td><td style={{padding:"9px"}}>{kt?<span style={{background:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red)+"18",color:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red),borderRadius:20,padding:"1px 8px",fontWeight:700,fontSize:10}}>{kp}/{kt}</span>:"-"}</td></tr>);})}</tbody>
-      </table>
+  return(
+    <div>
+      <div style={{overflowX:"auto"}}>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:600}}>
+          <thead><tr style={{borderBottom:`2px solid ${T.border}`}}>
+            {["Kamp","Kilde","Dato","Res.","Bes%","Avsl.for","Avsl.mot","xG","KPI"].map(h=>(
+              <th key={h} style={{padding:"7px 9px",textAlign:"left",fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,fontWeight:700,whiteSpace:"nowrap"}}>{h}</th>
+            ))}
+          </tr></thead>
+          <tbody>
+            {matches.map((mx,i)=>{
+              let kp=0,kt=0;TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(mx[k.id],k.t,k.op);if(s!=="na"){kt++;if(s==="pass")kp++;}}));
+              const sc=mx.scoreFor>mx.scoreAgainst?T.green:mx.scoreFor===mx.scoreAgainst?T.amber:T.red;
+              return(
+                <tr key={mx.id} onClick={()=>onSel(i)} style={{borderBottom:`1px solid ${T.border}`,cursor:"pointer",background:sel===i?T.blue+"08":"transparent"}}>
+                  <td style={{padding:"9px"}}>
+                    <div style={{fontWeight:700,fontSize:12,color:T.blueL}}>{mx.stabTeam||mx.filename.split(" vs ")[0]}</div>
+                    <div style={{fontSize:10,color:T.muted}}>vs {mx.oppTeam||mx.filename.split(" vs ")[1]||""}</div>
+                  </td>
+                  <td style={{padding:"9px"}}><SrcTag s={mx.source}/></td>
+                  <td style={{padding:"9px",color:T.muted}}>{mx.date}</td>
+                  <td style={{padding:"9px"}}><span style={{fontWeight:800,color:sc,fontSize:14}}>{mx.scoreFor}–{mx.scoreAgainst}</span></td>
+                  <td style={{padding:"9px"}}>{mx.possession!=null?`${mx.possession}%`:"-"}</td>
+                  <td style={{padding:"9px",color:T.green}}>{mx.avslutninger??"-"}</td>
+                  <td style={{padding:"9px",color:T.red}}>{mx.oppShots??"-"}</td>
+                  <td style={{padding:"9px",color:T.amber}}>{mx.xG??"-"}</td>
+                  <td style={{padding:"9px"}}>{kt?<span style={{background:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red)+"18",color:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red),borderRadius:20,padding:"1px 8px",fontWeight:700,fontSize:10}}>{kp}/{kt}</span>:"-"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {matches.length>1&&(
+        <div style={{marginTop:22}}>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,marginBottom:10}}>Trend — Possession %</div>
+          <div style={{display:"flex",gap:6,alignItems:"flex-end",height:70}}>
+            {matches.map((mx,i)=>{const p=mx.possession||0;const col=p>=55?T.green:p>=45?T.amber:T.red;return(<div key={mx.id} onClick={()=>onSel(i)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,cursor:"pointer"}}><span style={{fontSize:9,color:col,fontWeight:700}}>{p}%</span><div style={{width:"100%",height:`${p}%`,background:col+"80",borderRadius:"3px 3px 0 0",minHeight:4}}/></div>);})}
+          </div>
+          <div style={{height:1,background:T.border}}/>
+        </div>
+      )}
     </div>
-    {matches.length>1&&<div style={{marginTop:20}}>
-      <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,marginBottom:10}}>Trend — Possession %</div>
-      <div style={{display:"flex",gap:6,alignItems:"flex-end",height:70}}>{matches.map((mx,i)=>{const p=mx.possession||0;const col=p>=55?T.green:p>=45?T.amber:T.red;return(<div key={mx.id} onClick={()=>onSel(i)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,cursor:"pointer"}}><span style={{fontSize:9,color:col,fontWeight:700}}>{p}%</span><div style={{width:"100%",height:`${p}%`,background:col+"80",borderRadius:"3px 3px 0 0",minHeight:4}}/></div>);})}</div>
-      <div style={{height:1,background:T.border}}/>
-    </div>}
-  </div>);
+  );
 }
 
-/* ── Main App ────────────────────────────────────────────────────── */
 function App(){
   const[matches,setMatches]=useState(DEMOS);const[sel,setSel]=useState(0);const[tab,setTab]=useState("team");const[drag,setDrag]=useState(false);const[loading,setLoading]=useState(false);const[msg,setMsg]=useState("");const[err,setErr]=useState(null);const fRef=useRef();
   const m=matches[sel];
