@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="color-scheme" content="dark"/>
+  <title>Stabæk Akademi · Kampanalyse</title>
+
+  <!-- ══════════════════════════════════════
+       ENESTE LINJE DU TRENGER Å ENDRE:
+       Sett ditt eget tilgangspassord her.
+  ══════════════════════════════════════ -->
+  <script>window.ACCESS_PASSWORD = "stabek2026";</script>
+
+  <!-- Teams SDK -->
+  <script src="https://res.cdn.office.net/teams-js/2.22.0/js/MicrosoftTeams.min.js"></script>
+  <!-- React + Babel (kjører uten build-steg) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body,#root{height:100%;}
+    body{background:#030c18;color:#c8ddf0;font-family:'Syne',sans-serif;}
+    input,select,button{font-family:inherit;}
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:#030c18;}
+    ::-webkit-scrollbar-thumb{background:#0e2440;border-radius:3px;}
+
+    /* ── Overlay skjermer ── */
+    .overlay{position:fixed;inset:0;z-index:9999;background:#030c18;display:flex;align-items:center;justify-content:center;}
+    .box{background:#061424;border:1px solid #0e2440;border-radius:16px;padding:36px 32px;width:360px;box-shadow:0 24px 60px #00000099;}
+    .box-logo{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#3f6882;margin-bottom:5px;}
+    .box-title{font-size:22px;font-weight:800;color:#c8ddf0;margin-bottom:6px;line-height:1.2;}
+    .box-sub{font-size:12px;color:#3f6882;margin-bottom:22px;line-height:1.5;}
+    .box-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#3f6882;margin-bottom:5px;margin-top:14px;}
+    .box-input{width:100%;background:#0a1e33;border:1px solid #0e2440;border-radius:8px;padding:10px 13px;color:#c8ddf0;font-size:14px;outline:none;transition:border-color .2s;}
+    .box-input:focus{border-color:#1a72e8;}
+    .box-btn{width:100%;margin-top:16px;background:#1a72e818;border:1px solid #1a72e8;border-radius:8px;padding:11px;color:#5aa0f5;font-size:14px;font-weight:700;cursor:pointer;}
+    .box-btn:hover{background:#1a72e830;}
+    .box-btn-green{border-color:#22b866;color:#22b866;background:#22b86618;}
+    .box-btn-green:hover{background:#22b86630;}
+    .box-btn-skip{background:transparent;border-color:#0e2440;color:#3f6882;margin-top:8px;}
+    .box-err{margin-top:8px;color:#d93a3a;font-size:11px;min-height:16px;}
+    .box-info{background:#1a72e810;border:1px solid #1a72e830;border-radius:8px;padding:10px 12px;margin-top:12px;font-size:11px;color:#5aa0f5;line-height:1.6;}
+    .box-info a{color:#5aa0f5;}
+    .step-dots{display:flex;gap:6px;margin-bottom:20px;}
+    .dot{width:6px;height:6px;border-radius:50%;background:#0e2440;}
+    .dot.active{background:#1a72e8;}
+    .dot.done{background:#22b866;}
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     STEG 1 — PASSORD
+══════════════════════════════════════════════════════ -->
+<div id="screen-pw" class="overlay">
+  <div class="box">
+    <div class="box-logo">Stabæk Akademi</div>
+    <div class="box-title">Kampanalyse</div>
+    <div class="box-sub">Logg inn med tilgangspassordet du har fått.</div>
+    <div class="step-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="box-label">Passord</div>
+    <input id="pw-input" class="box-input" type="password" placeholder="Skriv inn passord"
+      onkeydown="if(event.key==='Enter')doPwLogin()"/>
+    <button class="box-btn" onclick="doPwLogin()">Logg inn →</button>
+    <div class="box-err" id="pw-err"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     STEG 2 — GEMINI API-NØKKEL (for PDF-parsing)
+══════════════════════════════════════════════════════ -->
+<div id="screen-key" class="overlay" style="display:none;">
+  <div class="box">
+    <div class="box-logo">Stabæk Akademi</div>
+    <div class="box-title">Sett opp PDF-parsing</div>
+    <div class="box-sub">For å lese StatsBomb PDF-rapporter automatisk trenger appen en gratis AI-nøkkel.</div>
+    <div class="step-dots"><div class="dot done"></div><div class="dot active"></div><div class="dot"></div></div>
+
+    <div class="box-info">
+      🔑 <strong>Gratis nøkkel — ingen kredittkort:</strong><br/>
+      1. Gå til <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a><br/>
+      2. Klikk «Create API key»<br/>
+      3. Kopier og lim inn under
+    </div>
+
+    <div class="box-label" style="margin-top:16px;">Gemini API-nøkkel</div>
+    <input id="key-input" class="box-input" type="password" placeholder="AIzaSy..."
+      onkeydown="if(event.key==='Enter')doSaveKey()"/>
+    <button class="box-btn box-btn-green" onclick="doSaveKey()">Lagre nøkkel og start →</button>
+    <button class="box-btn box-btn-skip" onclick="doSkipKey()">Hopp over — jeg bruker bare XML-filer</button>
+    <div class="box-err" id="key-err"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     STEG 3 — APP KLAR
+══════════════════════════════════════════════════════ -->
+<div id="screen-ready" class="overlay" style="display:none;">
+  <div class="box" style="text-align:center;">
+    <div style="font-size:36px;margin-bottom:12px;">✅</div>
+    <div class="box-title" style="text-align:center;">Alt klart!</div>
+    <div class="box-sub" style="text-align:center;">Innstillingene er lagret i nettleseren din.<br/>Du slipper å gjøre dette igjen.</div>
+    <div class="step-dots" style="justify-content:center;"><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div></div>
+    <button class="box-btn box-btn-green" onclick="document.getElementById('screen-ready').style.display='none'">Åpne Kampanalyse →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     INNSTILLINGER-MODAL (åpnes fra ⚙ i appen)
+══════════════════════════════════════════════════════ -->
+<div id="screen-settings" class="overlay" style="display:none;">
+  <div class="box">
+    <div class="box-logo">Innstillinger</div>
+    <div class="box-title">API-nøkkel</div>
+    <div class="box-sub">Oppdater eller bytt Gemini API-nøkkel.</div>
+    <div class="box-info">
+      Hent gratis nøkkel: <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>
+    </div>
+    <div class="box-label" style="margin-top:14px;">Nøkkel (lagret i nettleseren)</div>
+    <input id="settings-key-input" class="box-input" type="password" placeholder="AIzaSy..."/>
+    <button class="box-btn box-btn-green" onclick="doUpdateKey()">Lagre</button>
+    <button class="box-btn box-btn-skip" onclick="document.getElementById('screen-settings').style.display='none'">Avbryt</button>
+    <div class="box-err" id="settings-err"></div>
+  </div>
+</div>
+
+<div id="root"></div>
+
+<script>
+  // ── Auth / Setup logic ────────────────────────────────────────────
+  const LS_KEY   = 'stabek_gemini_key';
+  const SS_AUTH  = 'stabek_auth';
+
+  function doPwLogin(){
+    const val = document.getElementById('pw-input').value.trim();
+    if(val === window.ACCESS_PASSWORD){
+      sessionStorage.setItem(SS_AUTH,'1');
+      document.getElementById('screen-pw').style.display='none';
+      // Check if Gemini key already saved
+      const savedKey = localStorage.getItem(LS_KEY);
+      if(!savedKey){
+        document.getElementById('screen-key').style.display='flex';
+      }
+      // else: go straight to app
+    } else {
+      document.getElementById('pw-err').textContent='Feil passord. Prøv igjen.';
+      document.getElementById('pw-input').value='';
+    }
+  }
+
+  function doSaveKey(){
+    const val = document.getElementById('key-input').value.trim();
+    if(!val || val.length < 10){
+      document.getElementById('key-err').textContent='Skriv inn en gyldig nøkkel.';
+      return;
+    }
+    localStorage.setItem(LS_KEY, val);
+    document.getElementById('screen-key').style.display='none';
+    document.getElementById('screen-ready').style.display='flex';
+  }
+
+  function doSkipKey(){
+    localStorage.setItem(LS_KEY,'__skip__');
+    document.getElementById('screen-key').style.display='none';
+  }
+
+  function doUpdateKey(){
+    const val = document.getElementById('settings-key-input').value.trim();
+    if(!val || val.length < 10){ document.getElementById('settings-err').textContent='Skriv inn en gyldig nøkkel.'; return; }
+    localStorage.setItem(LS_KEY, val);
+    document.getElementById('screen-settings').style.display='none';
+    document.getElementById('settings-err').textContent='';
+  }
+
+  function openSettings(){
+    const k = localStorage.getItem(LS_KEY)||'';
+    document.getElementById('settings-key-input').value = k==='__skip__'?'':k;
+    document.getElementById('settings-err').textContent='';
+    document.getElementById('screen-settings').style.display='flex';
+  }
+
+  function getGeminiKey(){ return localStorage.getItem(LS_KEY)||''; }
+
+  // Auto-login if already authenticated in this session
+  if(sessionStorage.getItem(SS_AUTH)==='1'){
+    document.getElementById('screen-pw').style.display='none';
+  }
+
+  // Teams init
+  try{ if(typeof microsoftTeams!=='undefined'){ microsoftTeams.app.initialize().then(()=>{microsoftTeams.app.notifyAppLoaded();microsoftTeams.app.notifySuccess();}).catch(()=>{}); } }catch(e){}
+</script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useRef, useCallback } = React;
+
+const T={bg:"#030c18",card:"#061424",card2:"#0a1e33",border:"#0e2440",blue:"#1a72e8",blueL:"#5aa0f5",text:"#c8ddf0",muted:"#3f6882",green:"#22b866",amber:"#e8960e",red:"#d93a3a",purple:"#8b5cf6"};
+
+const STABÆK_SURNAMES=new Set(["Sørlie","Varvin-Kvamme","Hytterød","Velten-Simonsen","Hanche-Olsen","Osman","Bachke","Kjos","Dequeemani","Dahl Krugerud","Løberg","Nikolaisen","Essayas","Riis-Eriksen","Molnes","Mathisen","Naustvik","Tørmoen-Jourde","Valan","Jacobsen","Abuissa","Brekke","Bull-Rostrup","Forsström","Kirkenær","Lerdrup","Wallace","Hammerich","Slæperud","Wangen","Johannessen","Willand-Grønli","Da Rocha","Neiden","Omland","Skjellvik","Hageland","Kocani"]);
+function isStabek(n){for(const s of STABÆK_SURNAMES)if(n.toLowerCase().includes(s.toLowerCase()))return true;return false;}
+
+const DEFAULT_POS={1:"GK",2:"CB",3:"CB",4:"CB",5:"WB",6:"CM",7:"CM",8:"CM",9:"FW",10:"AM",11:"FW",12:"SUB",13:"CM",14:"WB",15:"FW",16:"SUB",17:"SUB",18:"CM",19:"FW",20:"WB",21:"SUB",22:"CM",23:"WB",24:"SUB",25:"CM",26:"FW",50:"FW",99:"GK",38:"SUB"};
+const POS_LABEL={GK:"Keeper",CB:"Stopper",WB:"Wingback",CM:"Midtbane",AM:"Off. MF",FW:"Angriper",SUB:"Innbytter"};
+const POS_COLOR={GK:T.amber,CB:T.blue,WB:T.purple,CM:T.blueL,AM:T.green,FW:T.red,SUB:T.muted};
+const POS_ORDER=["GK","CB","WB","CM","AM","FW","SUB"];
+
+const ROLE_KPIS={
+  GK:{player:[{id:"total",label:"Aksjoner",t:50,op:">="},{id:"efficiency",label:"Effektivitet",t:0,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:8,op:">="},{id:"gk_save",label:"Redninger",t:0,op:">="},{id:"clearances",label:"Klaringer",t:1,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:0.5,op:">="},{id:"clearances",label:"Klaringer",t:1,op:">="},{id:"tackles",label:"Taklinger",t:0,op:">="}],team:[{id:"total",label:"Sekvenser",t:40,op:">="},{id:"shot",label:"Avslut-seq",t:0,op:">="}]},
+  CB:{player:[{id:"total",label:"Aksjoner",t:40,op:">="},{id:"efficiency",label:"Effektivitet",t:0,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:15,op:">="},{id:"duel_def",label:"Def. dueller",t:5,op:">="},{id:"clearances",label:"Klaringer",t:2,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:0.5,op:">="},{id:"tackles",label:"Taklinger",t:2,op:">="},{id:"clearances",label:"Klaringer",t:2,op:">="},{id:"interceptions",label:"Interceptions",t:0,op:">="},{id:"pressures",label:"Press",t:5,op:">="}],team:[{id:"total",label:"Sekvenser",t:30,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:30,op:">="}]},
+  WB:{player:[{id:"total",label:"Aksjoner",t:30,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:8,op:">="},{id:"v1",label:"1v1 dueller",t:5,op:">="},{id:"duel_def",label:"Def. dueller",t:3,op:">="},{id:"counterattack",label:"Kontringsinitiativ",t:1,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:0.5,op:">="},{id:"key_passes",label:"Nøkkelpasn.",t:1,op:">="},{id:"dribbles",label:"Driblinger",t:1,op:">="},{id:"tackles",label:"Taklinger",t:2,op:">="}],team:[{id:"total",label:"Sekvenser",t:30,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:40,op:">="}]},
+  CM:{player:[{id:"total",label:"Aksjoner",t:50,op:">="},{id:"efficiency",label:"Effektivitet",t:0,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:18,op:">="},{id:"v1",label:"1v1 dueller",t:8,op:">="},{id:"duel_press",label:"Press-dueller",t:3,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:0.8,op:">="},{id:"key_passes",label:"Nøkkelpasn.",t:2,op:">="},{id:"pressures",label:"Press",t:10,op:">="},{id:"tackles",label:"Taklinger",t:3,op:">="},{id:"pass_pct",label:"Pasning%",t:80,op:">="}],team:[{id:"total",label:"Sekvenser",t:40,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:50,op:">="}]},
+  AM:{player:[{id:"total",label:"Aksjoner",t:40,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:15,op:">="},{id:"shot",label:"Avslutninger",t:1,op:">="},{id:"v1",label:"1v1 dueller",t:10,op:">="},{id:"counterattack",label:"Kontringsinitiativ",t:1,op:">="}],pdf:[{id:"xGChain",label:"xGChain",t:1.0,op:">="},{id:"shots",label:"Avslutninger",t:2,op:">="},{id:"key_passes",label:"Nøkkelpasn.",t:2,op:">="},{id:"xG_player",label:"xG",t:0.3,op:">="}],team:[{id:"total",label:"Sekvenser",t:35,op:">="},{id:"shot",label:"Avslut-seq",t:3,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:55,op:">="}]},
+  FW:{player:[{id:"shot",label:"Avslutninger",t:3,op:">="},{id:"v1",label:"1v1 dueller",t:8,op:">="},{id:"efficiency",label:"Effektivitet",t:-3,op:">="},{id:"counterattack",label:"Kontringsinitiativ",t:1,op:">="},{id:"smart_pass",label:"Smarte pasn.",t:5,op:">="}],pdf:[{id:"shots",label:"Avslutninger",t:3,op:">="},{id:"xG_player",label:"xG",t:0.5,op:">="},{id:"xGChain",label:"xGChain",t:1.0,op:">="},{id:"dribbles",label:"Driblinger",t:2,op:">="}],team:[{id:"total",label:"Sekvenser",t:25,op:">="},{id:"shot",label:"Avslut-seq",t:4,op:">="},{id:"finalThirdP",label:"Siste tredel%",t:60,op:">="}]},
+  SUB:{player:[],pdf:[],team:[]},
+};
+
+const TEAM_KPIS=[
+  {id:"dom",label:"Dominere kamper",items:[{id:"possession",label:"Possession %",t:55,op:">",unit:"%",src:["pdf","team","player"]},{id:"pasningar",label:"Pasninger totalt",t:450,op:">",src:["pdf"]},{id:"avslutninger",label:"Avslutninger",t:15,op:">",src:["pdf","team","player"]},{id:"touchBoks",label:"Touch i motst. boks",t:20,op:">",src:["pdf"]},{id:"passComp",label:"Pasningsprosent %",t:75,op:">",unit:"%",src:["pdf"]}]},
+  {id:"off",label:"Offensiv & angrepsvilling",items:[{id:"xG",label:"xG",t:2,op:">=",src:["pdf"]},{id:"maal",label:"Scorede mål",t:2,op:">=",src:["pdf","team","player"]},{id:"dribbSuksess",label:"Suksess % driblinger",t:60,op:">",unit:"%",src:["pdf"]},{id:"createdChances",label:"Skapte sjanser",t:10,op:">=",src:["player"]},{id:"highTransP",label:"Høye overganger %",t:8,op:">",unit:"%",src:["team"]}]},
+  {id:"omst",label:"Omstillinger",items:[{id:"highTrans",label:"Høye overganger",t:5,op:">=",src:["team"]},{id:"counterAttForward",label:"Kontrings-aksjoner",t:3,op:">=",src:["player"]},{id:"maalOffTrans",label:"Mål off. overganger",t:1,op:">",manual:true,src:["pdf","team","player"]}]},
+  {id:"fors",label:"Forsvarsspill",items:[{id:"oppShots",label:"Avslutninger imot",t:10,op:"<",src:["pdf","team","player"]},{id:"xGa",label:"xGa",t:1,op:"<",src:["pdf"]},{id:"oppGoals",label:"Innslupne mål",t:1,op:"<",src:["pdf","team","player"]},{id:"pressureRegains",label:"Press-gjenvindinger",t:40,op:">=",src:["pdf"]},{id:"maalDefTrans",label:"Mål def. overganger",t:1,op:"<",manual:true,src:["pdf","team","player"]}]},
+  {id:"dod",label:"Dødball",items:[{id:"dodPlusMinus",label:"+/− dødball",t:1,op:">",src:["pdf"]},{id:"oppCorners",label:"Motst. hjørnespark",t:4,op:"<",src:["team","player","pdf"]},{id:"oppSetPieces",label:"Motst. dødball",t:23,op:"<",src:["team","player"]}]},
+];
+
+/* ── PDF Parser (Gemini) ─────────────────────────────────────────── */
+const PDF_PROMPT=`Extract all data from this StatsBomb football match report PDF. Return ONLY valid JSON, no markdown.\n\nSchema:\n{"match":{"home_team":string,"away_team":string,"home_score":number,"away_score":number,"date":string,"competition":string},"team_stats":{"home":{"possession":number,"xG":number,"shots":number,"pass_completion":number,"total_passes":number,"pressures":number,"pressure_regains":number,"tackles_won":number},"away":{"possession":number,"xG":number,"shots":number,"pass_completion":number,"total_passes":number,"pressures":number,"pressure_regains":number,"tackles_won":number}},"home_players":[{"name":string,"jersey":number,"shots":number,"goals":number,"xG":number,"key_passes":number,"assists":number,"xGChain":number,"xG_buildup":number,"pressures":number,"tackles_won":number,"interceptions":number,"clearances":number,"dribbles":number,"dispossessions":number,"passes_into_box":number,"final_third_passes":number,"pass_pct":number,"touches_in_box":number}],"away_players":[same structure]}\n\nUse null for missing. Extract every player from appendix stats tables.`;
+
+async function parsePDFWithAI(file){
+  const key=getGeminiKey();
+  if(!key||key==='__skip__'||key.length<10) throw new Error("Ingen Gemini API-nøkkel. Klikk ⚙ øverst til høyre for å sette den opp.");
+  const base64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.onerror=()=>rej(new Error("Lesefeil"));r.readAsDataURL(file);});
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+  const resp=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:"application/pdf",data:base64}},{text:PDF_PROMPT}]}],generationConfig:{temperature:0,maxOutputTokens:4000}})});
+  if(!resp.ok){const e=await resp.json().catch(()=>({}));throw new Error(`Gemini feil ${resp.status}: ${e?.error?.message||"Sjekk nøkkelen i ⚙ innstillinger"}`);}
+  const data=await resp.json();
+  const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||"{}";
+  return buildFromPDF(JSON.parse(raw.replace(/```json|```/g,"").trim()),file.name);
+}
+
+function buildFromPDF(d,filename){
+  const m=d.match||{};const hs=d.team_stats?.home||{};const as=d.team_stats?.away||{};
+  const hIS=(m.home_team||"").toLowerCase().includes("stab");
+  const stab=hIS?hs:as;const opp=hIS?as:hs;
+  const sS=hIS?m.home_score:m.away_score;const oS=hIS?m.away_score:m.home_score;
+  const stabP=hIS?(d.home_players||[]):(d.away_players||[]);
+  const tD=stabP.reduce((s,p)=>s+(p.dribbles||0),0);const tDi=stabP.reduce((s,p)=>s+(p.dispossessions||0),0);
+  const players=stabP.map(p=>{const j=p.jersey||null;return{name:p.name,jersey:j,isStabek:true,pos:j?(DEFAULT_POS[j]||"SUB"):"CM",shots:p.shots??null,goals:p.goals??null,xG_player:p.xG??null,key_passes:p.key_passes??null,assists:p.assists??null,xGChain:p.xGChain??null,xG_buildup:p.xG_buildup??null,pressures:p.pressures??null,tackles:p.tackles_won??null,interceptions:p.interceptions??null,clearances:p.clearances??null,dribbles:p.dribbles??null,passes_into_box:p.passes_into_box??null,final_third_passes:p.final_third_passes??null,pass_pct:p.pass_pct??null,touches_in_box:p.touches_in_box??null,shot:p.shots??null,v1:p.dribbles??null,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null};});
+  const dm=(m.date||filename).match(/\d{4}-\d{2}-\d{2}/);
+  return{id:Date.now()+"",filename:`${m.home_team||"Stabæk"} vs ${m.away_team||"Motstander"}`,date:dm?dm[0]:(m.date||"?"),competition:m.competition||"Ukjent",scoreFor:sS||0,scoreAgainst:oS||0,source:"pdf",possession:stab.possession??null,pasningar:stab.total_passes??null,avslutninger:stab.shots??null,touchBoks:null,passComp:stab.pass_completion??null,xG:stab.xG??null,maal:sS??0,dribbSuksess:(tD+tDi)>0?Math.round(tD/(tD+tDi)*100):null,highTrans:null,highTransP:null,createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",oppShots:opp.shots??null,xGa:opp.xG??null,oppGoals:oS??0,oppAttacks:null,pressureRegains:stab.pressure_regains??null,dodPlusMinus:null,oppCorners:null,oppSetPieces:null,players};
+}
+
+/* ── XML Parsers ─────────────────────────────────────────────────── */
+function getLbls(inst){const d={};inst.querySelectorAll("label").forEach(l=>{const g=l.querySelector("group")?.textContent;const t=l.querySelector("text")?.textContent;if(g&&t){if(!d[g])d[g]=[];d[g].push(t);}});return d;}
+
+function parseTeamXML(xml,fn){
+  const doc=new DOMParser().parseFromString(xml,"text/xml");const insts=Array.from(doc.querySelectorAll("instance"));const code=i=>i.querySelector("code")?.textContent||"";
+  const bip=insts.filter(i=>code(i)==="Ball in play");const oppP=insts.filter(i=>code(i).includes("Possessions"));const oppA=insts.filter(i=>code(i).includes("Open play attacks"));const oppSh=insts.filter(i=>code(i).includes("- Shots"));const oppGo=insts.filter(i=>code(i).includes("- Goals"));const oppSt=insts.filter(i=>code(i).includes("Set Pieces"));const oppCo=insts.filter(i=>code(i).includes("Corners"));
+  const total=bip.length,stabPoss=total-oppP.length;let ft=0,ht=0,bs=0;const pd={};
+  bip.forEach(inst=>{const l=getLbls(inst);const eT=l["03 - End location third"]||[];const tr=l["08 - Transition"]||[];const ou=l["07 - Outcome"]||[];const pl=l["10 - Players"]||[];if(eT.includes("Final third"))ft++;if(tr.includes("High"))ht++;if(ou.some(o=>["Shot","Shot on goal","Goal"].includes(o)))bs++;pl.forEach(p=>{if(!pd[p])pd[p]={total:0,finalThird:0,highTrans:0,shot:0};pd[p].total++;if(eT.includes("Final third"))pd[p].finalThird++;if(tr.includes("High"))pd[p].highTrans++;if(ou.some(o=>["Shot","Shot on goal","Goal"].includes(o)))pd[p].shot++;});});
+  const sm=fn.match(/(\d)-(\d)/),dm=fn.match(/\d{4}-\d{2}-\d{2}/);const sF=sm?parseInt(sm[2]):oppGo.length,sA=sm?parseInt(sm[1]):0;
+  const players=Object.entries(pd).map(([name,s])=>{const jm=name.match(/^(\d+)\./);const j=jm?parseInt(jm[1]):0;return{name,jersey:j,isStabek:isStabek(name),pos:DEFAULT_POS[j]||"SUB",...s,finalThirdP:s.total?Math.round(s.finalThird/s.total*100):0,efficiency:null,smart_pass:null,xGChain:null,xG_player:null,key_passes:null,shots:null,tackles:null,clearances:null,dribbles:null,pressures:null,v1:null};});
+  return{id:Date.now()+"",filename:fn.replace(/__.*$/,"").replace(/_/g," ").trim().slice(0,50),date:dm?dm[0]:"?",competition:"OBOS Nasjonal",scoreFor:sF,scoreAgainst:sA,source:"team",possession:total?Math.round(stabPoss/total*100):0,pasningar:null,avslutninger:Math.max(0,bs-oppSh.length),touchBoks:null,passComp:null,xG:null,maal:sF,highTrans:ht,highTransP:total?Math.round(ht/total*100):0,finalThird:ft,finalThirdP:total?Math.round(ft/total*100):0,createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",oppShots:oppSh.length,xGa:null,oppGoals:sA,oppAttacks:oppA.length,pressureRegains:null,dodPlusMinus:null,oppCorners:oppCo.length,oppSetPieces:oppSt.length,players};
+}
+
+function parsePlayerXML(xml,fn){
+  const doc=new DOMParser().parseFromString(xml,"text/xml");const insts=Array.from(doc.querySelectorAll("instance"));const code=i=>i.querySelector("code")?.textContent||"";
+  const stabPC=insts.filter(i=>{const c=code(i);return c.includes("Opposition build-up play")&&!c.includes("Stabæk");}).length;const oppPC=insts.filter(i=>{const c=code(i);return c.includes("Opposition build-up play")&&c.includes("Stabæk");}).length;const totP=stabPC+oppPC;
+  const stabG=insts.filter(i=>code(i).includes("Stabæk")&&code(i).includes("Goal")).length;const oppG=insts.filter(i=>!code(i).startsWith("Stabæk")&&code(i).includes("Goal")&&code(i).includes(" - ")).length;
+  const cc=insts.filter(i=>code(i).includes("Opportunity conceded")&&!code(i).includes("Stabæk")).length;const ca=insts.filter(i=>code(i).includes("Stabæk")&&code(i).toLowerCase().includes("counter")).length;const os=insts.filter(i=>code(i).includes("Stabæk")&&code(i).includes("Opportunity conceded")).length;const oc=insts.filter(i=>code(i).includes("Stabæk")&&code(i).includes("Corner")).length;
+  const pd={};
+  insts.forEach(inst=>{const c=code(inst);if(!c.match(/^\(\d+\)/))return;const l=getLbls(inst);const at=l.attributes||[];const pa=l.passes||[];const ev2=l.Event||[];const du=l.duels||[];const gk=l.gk_events||[];const sh=l.Shots||[];if(!pd[c])pd[c]={total:0,plus:0,minus:0,efficiency:0,smart_pass:0,cross:0,duel_off:0,duel_def:0,duel_press:0,shot:0,v1:0,counterattack:0,assists:0,clearances:0,gk_save:0,shots:0,dribbles:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null};const s=pd[c];s.total++;if(at.includes("Plus")){s.plus++;s.efficiency++;}if(at.includes("Minus")){s.minus++;s.efficiency--;}if(pa.includes("Smart passes"))s.smart_pass++;if(pa.includes("Cross"))s.cross++;if(du.some(d=>d.includes("Offensive")||d.includes("Attacking")))s.duel_off++;if(du.some(d=>d.includes("Defensive")))s.duel_def++;if(du.some(d=>d.includes("Pressing")))s.duel_press++;if(sh.includes("Shots")||ev2.includes("Shots")){s.shot++;s.shots++;}if(ev2.includes("1VS1")||ev2.includes("1VS1 and dribbling")){s.v1++;s.dribbles++;}if(at.includes("Counterattack")||ev2.includes("Counterattack"))s.counterattack++;if(at.includes("Assists"))s.assists++;if(at.includes("Clearances"))s.clearances++;if(gk.includes("Saves"))s.gk_save++;});
+  const players=Object.entries(pd).map(([name,s])=>{const jm=name.match(/^\((\d+)\)/);const j=jm?parseInt(jm[1]):0;return{name,jersey:j,isStabek:isStabek(name),pos:DEFAULT_POS[j]||"SUB",...s};});
+  const dm=fn.match(/\d{4}-\d{2}-\d{2}/);const om=fn.match(/Stab[æe]k_U\d+_-_([A-Za-zæøåÆØÅ_]+_U\d+)/i);const oN=om?om[1].replace(/_/g," "):"Motstander";
+  return{id:Date.now()+"",filename:`Stabæk vs ${oN}`,date:dm?dm[0]:"?",competition:"OBOS Nasjonal",scoreFor:stabG,scoreAgainst:oppG,source:"player",possession:totP?Math.round(stabPC/totP*100):0,pasningar:null,avslutninger:null,touchBoks:null,passComp:null,xG:null,maal:stabG,highTrans:null,highTransP:null,createdChances:cc,counterAttForward:ca,maalOffTrans:"",maalDefTrans:"",oppShots:os,xGa:null,oppGoals:oppG,oppAttacks:null,pressureRegains:null,dodPlusMinus:null,oppCorners:oc,oppSetPieces:null,players};
+}
+
+async function parseFile(file){
+  if(file.name.endsWith(".pdf"))return await parsePDFWithAI(file);
+  const buf=await file.arrayBuffer();const bytes=new Uint8Array(buf);
+  const utf16=bytes[1]===0&&bytes[3]===0&&bytes[5]===0&&bytes[7]===0;
+  const xml=new TextDecoder(utf16?"utf-16-le":"utf-8").decode(buf);
+  if(xml.includes("Ball in play"))return parseTeamXML(xml,file.name);
+  if(xml.match(/\(\d+\)/))return parsePlayerXML(xml,file.name);
+  return null;
+}
+
+/* ── Demo ────────────────────────────────────────────────────────── */
+const DEMOS=[{id:"d1",filename:"Stabæk U15 vs Sogndal U15",date:"2026-05-03",competition:"OBOS Nasjonal G15 2026",scoreFor:5,scoreAgainst:0,source:"pdf",possession:64,pasningar:629,avslutninger:38,touchBoks:68,passComp:82,xG:5.93,maal:5,dribbSuksess:null,highTrans:null,highTransP:null,createdChances:null,counterAttForward:null,maalOffTrans:"",maalDefTrans:"",oppShots:7,xGa:0.19,oppGoals:0,oppAttacks:null,pressureRegains:57,dodPlusMinus:null,oppCorners:null,oppSetPieces:null,players:[{name:"Max Hammerich",jersey:9,isStabek:true,pos:"FW",shots:9,goals:2,xG_player:2.64,key_passes:1,assists:0,xGChain:2.76,pressures:26,tackles:2,interceptions:0,clearances:0,dribbles:0,pass_pct:75,touches_in_box:11,shot:9,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Oliver Lerdrup",jersey:7,isStabek:true,pos:"AM",shots:8,goals:2,xG_player:1.71,key_passes:5,assists:1,xGChain:3.82,pressures:20,tackles:3,interceptions:0,clearances:2,dribbles:0,pass_pct:75,touches_in_box:14,shot:8,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Ludvig Slæperud",jersey:10,isStabek:true,pos:"CM",shots:4,goals:0,xG_player:0.13,key_passes:10,assists:2,xGChain:2.88,pressures:16,tackles:4,interceptions:1,clearances:0,dribbles:0,pass_pct:77,touches_in_box:2,shot:4,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"Nicolas Da Rocha",jersey:99,isStabek:true,pos:"GK",shots:0,goals:0,xG_player:0,key_passes:0,assists:0,xGChain:0.83,pressures:0,tackles:0,interceptions:0,clearances:0,dribbles:0,pass_pct:86,touches_in_box:0,shot:0,v1:0,efficiency:null,smart_pass:null,duel_def:null,duel_press:null,counterattack:null,gk_save:null,total:null,finalThird:null,finalThirdP:null,highTrans:null}]},{id:"d2",filename:"Stabæk U19 vs Odds U19",date:"2026-03-22",competition:"OBOS Nasjonal U19",scoreFor:2,scoreAgainst:1,source:"player",possession:38,pasningar:null,avslutninger:14,touchBoks:null,passComp:null,xG:null,maal:2,dribbSuksess:null,highTrans:null,highTransP:null,createdChances:15,counterAttForward:7,maalOffTrans:"",maalDefTrans:"",oppShots:16,xGa:null,oppGoals:1,oppAttacks:null,pressureRegains:null,dodPlusMinus:null,oppCorners:8,oppSetPieces:11,players:[{name:"(1) H. Sørlie",jersey:1,isStabek:true,pos:"GK",total:82,plus:4,minus:0,efficiency:4,smart_pass:12,duel_def:0,duel_press:0,shot:0,v1:0,counterattack:0,assists:0,clearances:2,gk_save:1,shots:0,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:0,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"(15) C. Bachke",jersey:15,isStabek:true,pos:"FW",total:58,plus:9,minus:12,efficiency:-3,smart_pass:11,duel_def:3,duel_press:0,shot:4,v1:24,counterattack:2,assists:0,clearances:0,gk_save:0,shots:4,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:24,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null},{name:"(9) M. Kjos",jersey:9,isStabek:true,pos:"FW",total:48,plus:5,minus:6,efficiency:-1,smart_pass:11,duel_def:1,duel_press:0,shot:6,v1:13,counterattack:1,assists:0,clearances:3,gk_save:0,shots:6,xG_player:null,xGChain:null,key_passes:null,tackles:null,dribbles:13,pressures:null,pass_pct:null,finalThird:null,finalThirdP:null,highTrans:null}]}];
+
+/* ── Helpers ─────────────────────────────────────────────────────── */
+function ev(val,t,op){if(val===null||val===undefined||val==="")return"na";const v=+val,tg=+t;if(op===">")return v>tg?"pass":"fail";if(op===">=")return v>=tg?"pass":"fail";if(op==="<")return v<tg?"pass":"fail";if(op==="<=")return v<=tg?"pass":"fail";return"na";}
+const SS={pass:{c:T.green,bg:T.green+"18",sym:"✓"},fail:{c:T.red,bg:T.red+"18",sym:"✗"},na:{c:T.muted,bg:"transparent",sym:"—"}};
+const opS={">":">",">=":"≥","<":"<","<=":"≤"};
+function SrcTag({s}){const C={pdf:{l:"StatsBomb PDF",c:T.amber},team:{l:"Team XML",c:T.blue},player:{l:"Spiller XML",c:T.green}};const x=C[s]||C.team;return<span style={{background:x.c+"18",border:`1px solid ${x.c}44`,borderRadius:20,padding:"1px 8px",fontSize:9,fontWeight:700,color:x.c}}>{x.l}</span>;}
+function Stat({label,val,color=T.muted,bold}){return<div style={{fontSize:11}}><span style={{color:T.muted}}>{label} </span><span style={{color,fontWeight:bold?800:600}}>{val??"-"}</span></div>;}
+function Bar({v,max,color}){return<div style={{height:3,background:T.border,borderRadius:2,overflow:"hidden",marginTop:3}}><div style={{height:"100%",width:`${Math.min(100,(v/Math.max(max,1))*100)}%`,background:color,borderRadius:2}}/></div>;}
+const btnSt=(c,g=false)=>({background:g?"transparent":c+"18",border:`1px solid ${c}`,borderRadius:6,padding:"5px 14px",color:g?T.muted:c,cursor:"pointer",fontSize:11,fontWeight:700,fontFamily:"'Syne',sans-serif",letterSpacing:"0.05em"});
+
+/* ── Team KPI View ───────────────────────────────────────────────── */
+function TeamKPIView({m,onUpdate}){
+  const[ek,setEk]=useState(null);
+  let pass=0,total=0;TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(m[k.id],k.t,k.op);if(s!=="na"){total++;if(s==="pass")pass++;}}));
+  return(<div>
+    <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:14,flexWrap:"wrap"}}><SrcTag s={m.source}/><span style={{fontSize:11,color:T.muted}}>{pass}/{total} KPIer</span></div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(255px,1fr))",gap:10}}>
+      {TEAM_KPIS.map(g=>{
+        const items=g.items.filter(k=>k.src.includes(m.source)||k.manual);if(!items.length)return null;
+        const gP=items.filter(k=>ev(m[k.id],k.t,k.op)==="pass").length;const gT=items.filter(k=>ev(m[k.id],k.t,k.op)!=="na").length;
+        const tC=gT===0?T.border:gP===gT?T.green:gP===0?T.red:T.amber;
+        return(<div key={g.id} style={{background:T.card,borderRadius:10,border:`1px solid ${T.border}`,borderTop:`3px solid ${tC}`,overflow:"hidden"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 12px",borderBottom:`1px solid ${T.border}`}}>
+            <span style={{fontSize:11,fontWeight:700,letterSpacing:"0.07em",textTransform:"uppercase"}}>{g.label}</span>
+            {gT>0&&<span style={{fontSize:10,fontWeight:700,color:tC,background:tC+"18",borderRadius:20,padding:"1px 8px"}}>{gP}/{gT}</span>}
+          </div>
+          {items.map(k=>{const s=ev(m[k.id],k.t,k.op);const ss=SS[s];const isEd=ek===k.id;return(
+            <div key={k.id} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 12px",borderBottom:`1px solid ${T.border}18`}}>
+              <div style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:`1.5px solid ${ss.c}`,background:ss.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:800,color:ss.c}}>{ss.sym}</div>
+              <div style={{flex:1,fontSize:12}}>{k.label}{k.manual&&<span style={{color:T.muted,fontSize:9,marginLeft:4}}>manuell</span>}</div>
+              <span style={{fontSize:9,color:T.muted}}>{opS[k.op]}{k.t}{k.unit||""}</span>
+              {k.manual&&isEd?<input type="number" defaultValue={m[k.id]} autoFocus onBlur={e=>{onUpdate(k.id,e.target.value===""?"":(+e.target.value));setEk(null);}} style={{width:46,background:T.card2,border:`1px solid ${T.blue}`,borderRadius:4,padding:"1px 4px",color:T.text,fontSize:14,fontWeight:800,fontFamily:"inherit",textAlign:"right",outline:"none"}}/>:<span onClick={()=>k.manual&&setEk(k.id)} style={{fontSize:17,fontWeight:800,minWidth:34,textAlign:"right",color:s==="na"?T.muted:ss.c,cursor:k.manual?"pointer":"default"}}>{m[k.id]===null||m[k.id]===undefined||m[k.id]===""?"N/A":`${m[k.id]}${k.unit||""}`}</span>}
+            </div>
+          );})}
+        </div>);
+      })}
+      {[[m.source==="pdf"?"xG":"Høye overg.",m.source==="pdf"?m.xG:m.highTrans,T.amber],["Mål for",m.maal??m.scoreFor,T.green],["Mål mot",m.oppGoals??m.scoreAgainst,T.red],["Possession",m.possession!=null?`${m.possession}%`:"N/A",T.blueL]].map(([l,v,c])=>(
+        <div key={l} style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:8,padding:"10px 12px"}}>
+          <div style={{fontSize:9,color:T.muted,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:3}}>{l}</div>
+          <div style={{fontSize:24,fontWeight:800,color:c}}>{v??"-"}</div>
+        </div>
+      ))}
+    </div>
+  </div>);
+}
+
+/* ── Player View ─────────────────────────────────────────────────── */
+function PlayerView({m}){
+  const[posOv,setPosOv]=useState({});const[pf,setPf]=useState("all");const src=m.source;
+  const stabPs=m.players.filter(p=>p.isStabek);const filtered=stabPs.filter(p=>pf==="all"||(posOv[p.name]||p.pos)===pf);
+  const maxXgc=Math.max(...stabPs.map(p=>p.xGChain||0),1);const maxEff=Math.max(...stabPs.map(p=>Math.abs(p.efficiency||0)),1);
+  return(<div>
+    <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
+      {["all",...POS_ORDER].map(p=><button key={p} onClick={()=>setPf(p)} style={{background:pf===p?(POS_COLOR[p]||T.blue)+"18":"transparent",border:`1px solid ${pf===p?(POS_COLOR[p]||T.blue):T.border}`,borderRadius:20,padding:"3px 10px",cursor:"pointer",color:pf===p?(POS_COLOR[p]||T.blue):T.muted,fontSize:10,fontWeight:700,fontFamily:"inherit"}}>{p==="all"?"Alle":`${POS_LABEL[p]} (${p})`}</button>)}
+    </div>
+    {src==="team"&&<div style={{background:T.amber+"10",border:`1px solid ${T.amber}30`,borderRadius:7,padding:"7px 12px",marginBottom:12,fontSize:11,color:T.amber}}>Team XML: kun sekvensdata. Last opp Stabæk spiller-XML for fulle individuelle KPIer.</div>}
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(218px,1fr))",gap:9}}>
+      {filtered.map(p=>{
+        const pos=posOv[p.name]||p.pos;const rk=(ROLE_KPIS[pos]||{})[src]||[];
+        const kPass=rk.filter(k=>ev(p[k.id],k.t,k.op)==="pass").length;const kTot=rk.filter(k=>ev(p[k.id],k.t,k.op)!=="na").length;const pC=kTot===0?T.border:kPass===kTot?T.green:kPass===0?T.red:T.amber;
+        return(<div key={p.name} style={{background:T.card,border:`1px solid ${T.border}`,borderLeft:`3px solid ${POS_COLOR[pos]||T.blue}`,borderRadius:8,padding:"10px 12px"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:7}}>
+            <div><div style={{fontSize:9,color:POS_COLOR[pos]||T.blue,letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:1}}>{POS_LABEL[pos]||pos}</div><div style={{fontSize:13,fontWeight:700,lineHeight:1.2}}>{p.name}</div></div>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3}}>
+              {kTot>0&&<span style={{fontSize:10,fontWeight:700,color:pC,background:pC+"18",borderRadius:20,padding:"1px 7px"}}>{kPass}/{kTot}</span>}
+              <select value={pos} onChange={e=>setPosOv(prev=>({...prev,[p.name]:e.target.value}))} style={{background:T.border,border:"none",borderRadius:4,color:T.text,fontSize:9,fontFamily:"inherit",padding:"2px 4px",cursor:"pointer"}}>{POS_ORDER.map(po=><option key={po} value={po}>{po}</option>)}</select>
+            </div>
+          </div>
+          {rk.length>0&&<div style={{borderTop:`1px solid ${T.border}`,paddingTop:6,marginBottom:7}}>{rk.map((k,i)=>{const s=ev(p[k.id],k.t,k.op);const ss=SS[s];return(<div key={k.id} style={{display:"flex",alignItems:"center",gap:5,padding:"2px 0",borderBottom:i<rk.length-1?`1px solid ${T.border}15`:"none"}}><span style={{fontSize:8,color:ss.c,fontWeight:800,width:10,flexShrink:0}}>{ss.sym}</span><span style={{flex:1,fontSize:10,color:s==="na"?T.muted:T.text}}>{k.label}</span><span style={{fontSize:9,color:T.muted}}>{opS[k.op]}{k.t}</span><span style={{fontSize:12,fontWeight:800,color:ss.c,minWidth:24,textAlign:"right"}}>{p[k.id]!=null?p[k.id]:"—"}</span></div>);})}</div>}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 10px"}}>
+            {src==="pdf"&&<><Stat label="xGChain" val={p.xGChain} color={T.amber} bold/><Stat label="xG" val={p.xG_player} color={T.green} bold/><Stat label="Avslut." val={p.shots} color={T.red}/><Stat label="Nøkkelp." val={p.key_passes} color={T.blueL}/><Stat label="Press" val={p.pressures} color={T.purple}/><Stat label="Taklinger" val={p.tackles} color={T.blue}/></>}
+            {src==="player"&&<><Stat label="Aksjoner" val={p.total} color={T.blueL} bold/><Stat label="Eff." val={p.efficiency!=null?(p.efficiency>=0?`+${p.efficiency}`:p.efficiency):"—"} color={(p.efficiency||0)>=0?T.green:T.red} bold/><Stat label="Smart p." val={p.smart_pass} color={T.amber}/><Stat label="Avslut." val={p.shot} color={T.red}/><Stat label="1v1" val={p.v1} color={T.purple}/><Stat label="Def.duel" val={p.duel_def} color={T.blue}/></>}
+            {src==="team"&&<><Stat label="Sekvenser" val={p.total} color={T.blueL} bold/><Stat label="Siste 3." val={p.finalThirdP!=null?`${p.finalThirdP}%`:"—"} color={T.amber} bold/><Stat label="Avslut." val={p.shot} color={T.red}/><Stat label="H.overg." val={p.highTrans} color={T.purple}/></>}
+          </div>
+        </div>);
+      })}
+    </div>
+    {stabPs.length>1&&<div style={{marginTop:20}}>
+      <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,marginBottom:10}}>Rangering — {src==="pdf"?"xGChain":src==="player"?"Effektivitet":"Siste tredel %"}</div>
+      {[...stabPs].sort((a,b)=>{if(src==="pdf")return(b.xGChain||0)-(a.xGChain||0);if(src==="player")return(b.efficiency||0)-(a.efficiency||0);return(b.finalThirdP||0)-(a.finalThirdP||0);}).map((p,i)=>{
+        const pos2=posOv[p.name]||p.pos;const metric=src==="pdf"?(p.xGChain||0):src==="player"?(p.efficiency||0):(p.finalThirdP||0);const col=src==="player"?metric>=0?T.green:T.red:T.amber;const display=src==="pdf"?metric.toFixed(2):src==="player"?(metric>=0?`+${metric}`:metric):`${metric}%`;
+        return(<div key={p.name} style={{display:"flex",alignItems:"center",gap:9,padding:"6px 0",borderBottom:`1px solid ${T.border}22`}}>
+          <span style={{width:20,fontSize:10,color:T.muted,textAlign:"right"}}>{i+1}</span>
+          <span style={{width:22,height:22,borderRadius:"50%",background:POS_COLOR[pos2]+"18",border:`1px solid ${POS_COLOR[pos2]}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:800,color:POS_COLOR[pos2]}}>{pos2}</span>
+          <span style={{flex:1,fontSize:12,fontWeight:600}}>{p.name}</span>
+          <div style={{width:80}}><Bar v={Math.abs(metric)} max={src==="pdf"?maxXgc:src==="player"?maxEff:100} color={col}/></div>
+          <span style={{width:40,textAlign:"right",fontSize:15,fontWeight:800,color:col}}>{display}</span>
+        </div>);
+      })}
+    </div>}
+  </div>);
+}
+
+/* ── History View ────────────────────────────────────────────────── */
+function HistoryView({matches,sel,onSel}){
+  return(<div>
+    <div style={{overflowX:"auto"}}>
+      <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:600}}>
+        <thead><tr style={{borderBottom:`2px solid ${T.border}`}}>{["Kamp","Kilde","Dato","Res.","Bes%","Avsl.for","Avsl.mot","xG","KPI"].map(h=><th key={h} style={{padding:"7px 9px",textAlign:"left",fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,fontWeight:700,whiteSpace:"nowrap"}}>{h}</th>)}</tr></thead>
+        <tbody>{matches.map((mx,i)=>{let kp=0,kt=0;TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(mx[k.id],k.t,k.op);if(s!=="na"){kt++;if(s==="pass")kp++;}}));const sc=mx.scoreFor>mx.scoreAgainst?T.green:mx.scoreFor===mx.scoreAgainst?T.amber:T.red;return(<tr key={mx.id} onClick={()=>onSel(i)} style={{borderBottom:`1px solid ${T.border}`,cursor:"pointer",background:sel===i?T.blue+"08":"transparent"}}><td style={{padding:"9px",fontWeight:700,maxWidth:140,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{mx.filename}</td><td style={{padding:"9px"}}><SrcTag s={mx.source}/></td><td style={{padding:"9px",color:T.muted}}>{mx.date}</td><td style={{padding:"9px"}}><span style={{fontWeight:800,color:sc,fontSize:14}}>{mx.scoreFor}–{mx.scoreAgainst}</span></td><td style={{padding:"9px"}}>{mx.possession!=null?`${mx.possession}%`:"-"}</td><td style={{padding:"9px",color:T.green}}>{mx.avslutninger??"-"}</td><td style={{padding:"9px",color:T.red}}>{mx.oppShots??"-"}</td><td style={{padding:"9px",color:T.amber}}>{mx.xG??"-"}</td><td style={{padding:"9px"}}>{kt?<span style={{background:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red)+"18",color:(kp/kt>0.7?T.green:kp/kt>0.4?T.amber:T.red),borderRadius:20,padding:"1px 8px",fontWeight:700,fontSize:10}}>{kp}/{kt}</span>:"-"}</td></tr>);})}</tbody>
+      </table>
+    </div>
+    {matches.length>1&&<div style={{marginTop:20}}>
+      <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:T.muted,marginBottom:10}}>Trend — Possession %</div>
+      <div style={{display:"flex",gap:6,alignItems:"flex-end",height:70}}>{matches.map((mx,i)=>{const p=mx.possession||0;const col=p>=55?T.green:p>=45?T.amber:T.red;return(<div key={mx.id} onClick={()=>onSel(i)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,cursor:"pointer"}}><span style={{fontSize:9,color:col,fontWeight:700}}>{p}%</span><div style={{width:"100%",height:`${p}%`,background:col+"80",borderRadius:"3px 3px 0 0",minHeight:4}}/></div>);})}</div>
+      <div style={{height:1,background:T.border}}/>
+    </div>}
+  </div>);
+}
+
+/* ── Main App ────────────────────────────────────────────────────── */
+function App(){
+  const[matches,setMatches]=useState(DEMOS);const[sel,setSel]=useState(0);const[tab,setTab]=useState("team");const[drag,setDrag]=useState(false);const[loading,setLoading]=useState(false);const[msg,setMsg]=useState("");const[err,setErr]=useState(null);const fRef=useRef();
+  const m=matches[sel];
+  const hasKey=()=>{const k=getGeminiKey();return k&&k!=="__skip__"&&k.length>10;};
+
+  const handleFiles=useCallback(async(files)=>{
+    setLoading(true);setErr(null);const added=[];
+    for(const file of Array.from(files)){try{setMsg(`Leser ${file.name}${file.name.endsWith(".pdf")?" (AI…)":"…"}`);const parsed=await parseFile(file);if(parsed)added.push(parsed);else setErr(`Ukjent format: ${file.name}`);}catch(e){setErr(`Feil: ${e.message}`);}}
+    if(added.length){setMatches(p=>{const u=[...p,...added];setSel(u.length-1);return u;});}
+    setLoading(false);setMsg("");
+  },[]);
+
+  const updField=(id,val)=>setMatches(p=>p.map((mx,i)=>i===sel?{...mx,[id]:val}:mx));
+  let kP=0,kT=0;TEAM_KPIS.forEach(g=>g.items.forEach(k=>{const s=ev(m[k.id],k.t,k.op);if(s!=="na"){kT++;if(s==="pass")kP++;}}));
+  const sc=m.scoreFor>m.scoreAgainst?T.green:m.scoreFor===m.scoreAgainst?T.amber:T.red;
+  const TABS=[["team","Team KPIer"],["players","Individuelle"],["history","Historikk"]];
+
+  return(<div style={{fontFamily:"'Syne',sans-serif",background:T.bg,minHeight:"100vh",color:T.text}}>
+    {drag&&<div onDragOver={e=>e.preventDefault()} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);handleFiles(e.dataTransfer.files);}} style={{position:"fixed",inset:0,zIndex:200,background:"#030c18ee",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:12,border:`3px dashed ${T.blue}`,fontSize:18,fontWeight:800,color:T.blueL}}><div>Slipp filer her</div><div style={{fontSize:11,fontWeight:400,color:T.muted}}>PDF · XML Spiller · XML Team</div></div>}
+
+    <div onDragOver={e=>{e.preventDefault();setDrag(true);}} style={{background:"linear-gradient(160deg,#030c18 0%,#071c34 100%)",borderBottom:`1.5px solid ${T.border}`,padding:"16px 20px 0"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:10}}>
+        <div>
+          <div style={{fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:T.muted,marginBottom:3}}>Stabæk Akademi · Kampanalyse</div>
+          <div style={{fontSize:20,fontWeight:800}}>{m.filename}</div>
+          <div style={{display:"flex",gap:8,alignItems:"center",marginTop:4,flexWrap:"wrap"}}>
+            <span style={{fontSize:20,fontWeight:800,color:sc}}>{m.scoreFor} – {m.scoreAgainst}</span>
+            <span style={{fontSize:10,color:T.muted}}>{m.date} · {m.competition}</span>
+            <SrcTag s={m.source}/>
+          </div>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
+          <div style={{display:"flex",gap:6}}>
+            <button onClick={()=>fRef.current.click()} style={btnSt(T.blueL)} disabled={loading}>
+              {loading?msg||"Laster…":"+ Last opp fil"}
+            </button>
+            {/* ⚙ Settings */}
+            <button onClick={()=>window.openSettings()} title="Innstillinger / API-nøkkel"
+              style={{background:hasKey()?T.green+"18":"transparent",border:`1px solid ${hasKey()?T.green:T.amber}`,borderRadius:6,padding:"5px 10px",color:hasKey()?T.green:T.amber,cursor:"pointer",fontSize:13}}>
+              {hasKey()?"⚙":"⚙ API"}
+            </button>
+          </div>
+          <input ref={fRef} type="file" accept=".xml,.pdf" multiple style={{display:"none"}} onChange={e=>handleFiles(e.target.files)}/>
+          <div style={{background:`${sc}18`,border:`1.5px solid ${sc}`,borderRadius:8,padding:"6px 16px",textAlign:"center"}}>
+            <div style={{fontSize:22,fontWeight:800,color:sc,lineHeight:1}}>{kP}/{kT}</div>
+            <div style={{fontSize:8,letterSpacing:"0.12em",color:T.muted,textTransform:"uppercase"}}>KPI</div>
+          </div>
+        </div>
+      </div>
+      {matches.length>1&&<div style={{display:"flex",gap:5,marginTop:10,overflowX:"auto",paddingBottom:2}}>{matches.map((mx,i)=><button key={mx.id} onClick={()=>setSel(i)} style={{background:sel===i?T.blue+"18":"transparent",border:`1px solid ${sel===i?T.blue:T.border}`,borderRadius:5,padding:"2px 10px",cursor:"pointer",color:sel===i?T.blueL:T.muted,fontSize:10,fontWeight:600,fontFamily:"inherit",whiteSpace:"nowrap"}}>{mx.filename.slice(0,24)}{mx.filename.length>24?"…":""}</button>)}</div>}
+      {!hasKey()&&<div style={{background:T.amber+"10",border:`1px solid ${T.amber}30`,borderRadius:6,padding:"7px 12px",marginTop:8,fontSize:11,color:T.amber}}>
+        ⚠ PDF-parsing er ikke aktivert. Klikk <strong>⚙ API</strong> for å sette opp gratis Gemini-nøkkel. XML-filer fungerer uten nøkkel.
+      </div>}
+      {err&&<div style={{background:T.red+"18",border:`1px solid ${T.red}44`,borderRadius:6,padding:"6px 12px",marginTop:8,fontSize:11,color:T.red}}>{err}<button onClick={()=>setErr(null)} style={{marginLeft:10,background:"none",border:"none",color:T.red,cursor:"pointer"}}>✕</button></div>}
+      <div style={{display:"flex",gap:0,marginTop:12}}>{TABS.map(([id,lbl])=><button key={id} onClick={()=>setTab(id)} style={{background:"transparent",border:"none",borderBottom:`2.5px solid ${tab===id?T.blue:"transparent"}`,padding:"5px 15px 9px",color:tab===id?T.blueL:T.muted,cursor:"pointer",fontSize:10,fontWeight:700,fontFamily:"inherit",letterSpacing:"0.09em",textTransform:"uppercase"}}>{lbl}</button>)}</div>
+    </div>
+
+    <div style={{padding:"18px 20px"}}>
+      {tab==="team"&&<TeamKPIView m={m} onUpdate={updField}/>}
+      {tab==="players"&&<PlayerView m={m}/>}
+      {tab==="history"&&<HistoryView matches={matches} sel={sel} onSel={i=>{setSel(i);setTab("team");}}/>}
+    </div>
+    <div style={{padding:"8px 20px 24px",fontSize:9,color:T.muted+"55",lineHeight:1.8}}>
+      Stabæk Akademi Kampanalyse · PDF (Gemini AI) · Spiller-XML · Team-XML
+    </div>
+  </div>);
+}
+
+// Expose openSettings to vanilla JS
+window.openSettings = () => document.getElementById('screen-settings').style.display='flex';
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
