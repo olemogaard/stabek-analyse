@@ -219,119 +219,119 @@ const POS_ORDER=["GK","CB","WB","CM","AM","FW","SUB"];
 const ROLE_KPIS={
   GK:{
     player:[
-      {id:"total",      label:"Totale aksjoner",         t:50,op:">=",phase:"generelt",info:"Aktivitetsnivå i spillet"},
-      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",phase:"generelt",info:"Netto positiv innvirkning"},
-      {id:"smart_pass", label:"Smarte pasninger",        t:8, op:">=",phase:"angrep",  info:"A1: Starter angrepsspill — keeper som playmaker"},
-      {id:"gk_save",    label:"Redninger",               t:0, op:">=",phase:"forsvar", info:"F3: Skuddstopper — hindre mål"},
-      {id:"clearances", label:"Klaringer",               t:1, op:">=",phase:"forsvar", info:"F3: Kontroll på boks — rydder farligheter"},
+      {id:"total",      label:"Totale aksjoner",         t:50,op:">=",operativt:true,phase:"generelt",info:"Aktivitetsnivå i spillet"},
+      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",operativt:true,phase:"generelt",info:"Netto positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasninger",        t:8, op:">=",operativt:true,phase:"angrep",  info:"A1: Starter angrepsspill — keeper som playmaker"},
+      {id:"gk_save",    label:"Redninger",               t:0, op:">=",operativt:true,phase:"forsvar", info:"F3: Skuddstopper — hindre mål"},
+      {id:"clearances", label:"Klaringer",               t:1, op:">=",operativt:true,phase:"forsvar", info:"F3: Kontroll på boks — rydder farligheter"},
     ],
     pdf:[
-      {id:"xGChain",    label:"xGChain",                 t:0.5,op:">=",phase:"angrep", info:"Deltar i lagets angrepskjeder"},
-      {id:"pass_pct",   label:"Pasningsprosent %",       t:70, op:">=",phase:"angrep", info:"A1: Trygg distribusjon ut fra keeper"},
-      {id:"clearances", label:"Klaringer",               t:1,  op:">=",phase:"forsvar",info:"F3: Hindrer truende situasjoner i boks"},
+      {id:"xGChain",    label:"xGChain",                 t:0.5,op:">=",operativt:true,phase:"angrep", info:"Deltar i lagets angrepskjeder"},
+      {id:"pass_pct",   label:"Pasningsprosent %",       t:70, op:">=",operativt:true,phase:"angrep", info:"A1: Trygg distribusjon ut fra keeper"},
+      {id:"clearances", label:"Klaringer",               t:1,  op:">=",operativt:true,phase:"forsvar",info:"F3: Hindrer truende situasjoner i boks"},
     ],
     team:[
-      {id:"total",      label:"Sekvenser totalt",        t:40,op:">=",phase:"generelt",info:"Involvert i lagets spill"},
-      {id:"finalThirdP",label:"Siste tredel %",          t:10,op:">=",phase:"angrep",  info:"Deltakelse i oppbyggende spill"},
+      {id:"total",      label:"Sekvenser totalt",        t:40,op:">=",operativt:true,phase:"generelt",info:"Involvert i lagets spill"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:10,op:">=",operativt:true,phase:"angrep",  info:"Deltakelse i oppbyggende spill"},
     ],
   },
   CB:{
     player:[
-      {id:"total",      label:"Totale aksjoner",         t:40,op:">=",phase:"generelt",info:"Involvert i lagets spill"},
-      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",phase:"generelt",info:"Netto positiv innvirkning"},
-      {id:"smart_pass", label:"Smarte pasninger",        t:15,op:">=",phase:"angrep",  info:"A1: Starter angrep — leder bakre ledd fremover"},
-      {id:"duel_def",   label:"Def. dueller vunnet",     t:5, op:">=",phase:"forsvar", info:"F1/F2: Vinner dueller — holder linjene"},
-      {id:"clearances", label:"Klaringer",               t:2, op:">=",phase:"forsvar", info:"F3: Rydder farligheter, kontroll på boks"},
+      {id:"total",      label:"Totale aksjoner",         t:40,op:">=",operativt:true,phase:"generelt",info:"Involvert i lagets spill"},
+      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",operativt:true,phase:"generelt",info:"Netto positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasninger",        t:15,op:">=",operativt:true,phase:"angrep",  info:"A1: Starter angrep — leder bakre ledd fremover"},
+      {id:"duel_def",   label:"Def. dueller vunnet",     t:5, op:">=",operativt:true,phase:"forsvar", info:"F1/F2: Vinner dueller — holder linjene"},
+      {id:"clearances", label:"Klaringer",               t:2, op:">=",operativt:true,phase:"forsvar", info:"F3: Rydder farligheter, kontroll på boks"},
     ],
     pdf:[
-      {id:"xGChain",      label:"xGChain",               t:0.5,op:">=",phase:"angrep", info:"A1/A2: Bidrar i angrepskjeder"},
-      {id:"tackles",      label:"Taklinger vunnet",      t:2,  op:">=",phase:"forsvar",info:"F1: Vinner ball i press"},
-      {id:"interceptions",label:"Interceptions",         t:1,  op:">=",phase:"forsvar",info:"F2: Leser spillet — bryter pasningslinjer"},
-      {id:"clearances",   label:"Klaringer",             t:2,  op:">=",phase:"forsvar",info:"F3: Rydder farligheter"},
-      {id:"pass_pct",     label:"Pasningsprosent %",     t:82, op:">=",phase:"angrep", info:"A1: Trygg ballsirkulering bak"},
+      {id:"xGChain",      label:"xGChain",               t:0.5,op:">=",operativt:true,phase:"angrep", info:"A1/A2: Bidrar i angrepskjeder"},
+      {id:"tackles",      label:"Taklinger vunnet",      t:2,  op:">=",operativt:true,phase:"forsvar",info:"F1: Vinner ball i press"},
+      {id:"interceptions",label:"Interceptions",         t:1,  op:">=",operativt:true,phase:"forsvar",info:"F2: Leser spillet — bryter pasningslinjer"},
+      {id:"clearances",   label:"Klaringer",             t:2,  op:">=",operativt:true,phase:"forsvar",info:"F3: Rydder farligheter"},
+      {id:"pass_pct",     label:"Pasningsprosent %",     t:82, op:">=",operativt:true,phase:"angrep", info:"A1: Trygg ballsirkulering bak"},
     ],
     team:[
-      {id:"total",      label:"Sekvenser",               t:30,op:">=",phase:"generelt",info:"Aktiv i lagets spill"},
-      {id:"finalThirdP",label:"Siste tredel %",          t:30,op:">=",phase:"angrep",  info:"A1/A2: Deltar i oppbyggende faser"},
+      {id:"total",      label:"Sekvenser",               t:30,op:">=",operativt:true,phase:"generelt",info:"Aktiv i lagets spill"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:30,op:">=",operativt:true,phase:"angrep",  info:"A1/A2: Deltar i oppbyggende faser"},
     ],
   },
   WB:{
     player:[
-      {id:"total",        label:"Totale aksjoner",       t:30,op:">=",phase:"generelt",info:"Aktiv i begge faser"},
-      {id:"smart_pass",   label:"Smarte pasninger",      t:8, op:">=",phase:"angrep",  info:"A2: Innlegg og kombinasjoner fra kant"},
-      {id:"v1",           label:"1v1 dueller",           t:5, op:">=",phase:"angrep",  info:"A2: Slår seg forbi — skaper overtall"},
-      {id:"duel_def",     label:"Def. dueller vunnet",   t:3, op:">=",phase:"forsvar", info:"F1/F2: Forsvarsbidrag på kant"},
-      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",phase:"omstilling",info:"Omstilling: Trigger raske overganger"},
+      {id:"total",        label:"Totale aksjoner",       t:30,op:">=",operativt:true,phase:"generelt",info:"Aktiv i begge faser"},
+      {id:"smart_pass",   label:"Smarte pasninger",      t:8, op:">=",operativt:true,phase:"angrep",  info:"A2: Innlegg og kombinasjoner fra kant"},
+      {id:"v1",           label:"1v1 dueller",           t:5, op:">=",operativt:true,phase:"angrep",  info:"A2: Slår seg forbi — skaper overtall"},
+      {id:"duel_def",     label:"Def. dueller vunnet",   t:3, op:">=",operativt:true,phase:"forsvar", info:"F1/F2: Forsvarsbidrag på kant"},
+      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",operativt:true,phase:"omstilling",info:"Omstilling: Trigger raske overganger"},
     ],
     pdf:[
-      {id:"xGChain",    label:"xGChain",                 t:0.6,op:">=",phase:"angrep", info:"A2: Involvert i sjanseskaping fra kant"},
-      {id:"key_passes", label:"Nøkkelpasn. / innlegg",   t:1,  op:">=",phase:"angrep", info:"A2/A3: Skaper sjanser med innlegg"},
-      {id:"dribbles",   label:"Vellykkede driblinger",   t:1,  op:">=",phase:"angrep", info:"A2: Slår seg forbi forsvarere"},
-      {id:"tackles",    label:"Taklinger vunnet",        t:2,  op:">=",phase:"forsvar",info:"F1/F2: Defensivt bidrag"},
+      {id:"xGChain",    label:"xGChain",                 t:0.6,op:">=",operativt:true,phase:"angrep", info:"A2: Involvert i sjanseskaping fra kant"},
+      {id:"key_passes", label:"Nøkkelpasn. / innlegg",   t:1,  op:">=",operativt:true,phase:"angrep", info:"A2/A3: Skaper sjanser med innlegg"},
+      {id:"dribbles",   label:"Vellykkede driblinger",   t:1,  op:">=",operativt:true,phase:"angrep", info:"A2: Slår seg forbi forsvarere"},
+      {id:"tackles",    label:"Taklinger vunnet",        t:2,  op:">=",operativt:true,phase:"forsvar",info:"F1/F2: Defensivt bidrag"},
     ],
     team:[
-      {id:"total",      label:"Sekvenser",               t:30,op:">=",phase:"generelt",info:"Aktiv i begge faser"},
-      {id:"finalThirdP",label:"Siste tredel %",          t:40,op:">=",phase:"angrep",  info:"A2: Støtter angrep fra kant"},
+      {id:"total",      label:"Sekvenser",               t:30,op:">=",operativt:true,phase:"generelt",info:"Aktiv i begge faser"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:40,op:">=",operativt:true,phase:"angrep",  info:"A2: Støtter angrep fra kant"},
     ],
   },
   CM:{
     player:[
-      {id:"total",      label:"Totale aksjoner",         t:50,op:">=",phase:"generelt",info:"Hjerte i lagets spill"},
-      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",phase:"generelt",info:"Netto positiv innvirkning"},
-      {id:"smart_pass", label:"Smarte pasninger",        t:18,op:">=",phase:"angrep",  info:"A1/A2: Kobler bakrom til front — forløser spillere"},
-      {id:"v1",         label:"1v1 dueller (Ping-Pong)", t:8, op:">=",phase:"forsvar", info:"F1: Ping-Pong press — lokker og vinner ball"},
-      {id:"duel_press", label:"Press-dueller",           t:3, op:">=",phase:"forsvar", info:"F1: Presser kontrollert — leder fremre ledd"},
+      {id:"total",      label:"Totale aksjoner",         t:50,op:">=",operativt:true,phase:"generelt",info:"Hjerte i lagets spill"},
+      {id:"efficiency", label:"Effektivitet (+/−)",      t:0, op:">=",operativt:true,phase:"generelt",info:"Netto positiv innvirkning"},
+      {id:"smart_pass", label:"Smarte pasninger",        t:18,op:">=",operativt:true,phase:"angrep",  info:"A1/A2: Kobler bakrom til front — forløser spillere"},
+      {id:"v1",         label:"1v1 dueller (Ping-Pong)", t:8, op:">=",operativt:true,phase:"forsvar", info:"F1: Ping-Pong press — lokker og vinner ball"},
+      {id:"duel_press", label:"Press-dueller",           t:3, op:">=",operativt:true,phase:"forsvar", info:"F1: Presser kontrollert — leder fremre ledd"},
     ],
     pdf:[
-      {id:"xGChain",    label:"xGChain",                 t:0.8,op:">=",phase:"angrep", info:"A1/A2: Sentral i angrepskjeder"},
-      {id:"key_passes", label:"Nøkkelpasninger",         t:2,  op:">=",phase:"angrep", info:"A2/A3: Magic pass — forløser rom"},
-      {id:"pressures",  label:"Press-aksjoner",          t:10, op:">=",phase:"forsvar",info:"F1: Høyt og aktivt press"},
-      {id:"tackles",    label:"Taklinger vunnet",        t:3,  op:">=",phase:"forsvar",info:"F1/F2: Vinner ballen tilbake"},
-      {id:"pass_pct",   label:"Pasningsprosent %",       t:80, op:">=",phase:"angrep", info:"A1: Sirkulerer trygt og raskt"},
+      {id:"xGChain",    label:"xGChain",                 t:0.8,op:">=",operativt:true,phase:"angrep", info:"A1/A2: Sentral i angrepskjeder"},
+      {id:"key_passes", label:"Nøkkelpasninger",         t:2,  op:">=",operativt:true,phase:"angrep", info:"A2/A3: Magic pass — forløser rom"},
+      {id:"pressures",  label:"Press-aksjoner",          t:10, op:">=",operativt:true,phase:"forsvar",info:"F1: Høyt og aktivt press"},
+      {id:"tackles",    label:"Taklinger vunnet",        t:3,  op:">=",operativt:true,phase:"forsvar",info:"F1/F2: Vinner ballen tilbake"},
+      {id:"pass_pct",   label:"Pasningsprosent %",       t:80, op:">=",operativt:true,phase:"angrep", info:"A1: Sirkulerer trygt og raskt"},
     ],
     team:[
-      {id:"total",      label:"Sekvenser",               t:40,op:">=",phase:"generelt",info:"Sentralt involvert"},
-      {id:"finalThirdP",label:"Siste tredel %",          t:50,op:">=",phase:"angrep",  info:"A2: Deltar i angrepsspill"},
+      {id:"total",      label:"Sekvenser",               t:40,op:">=",operativt:true,phase:"generelt",info:"Sentralt involvert"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:50,op:">=",operativt:true,phase:"angrep",  info:"A2: Deltar i angrepsspill"},
     ],
   },
   AM:{
     player:[
-      {id:"total",        label:"Totale aksjoner",       t:40,op:">=",phase:"generelt",info:"Aktiv i skapefasen"},
-      {id:"smart_pass",   label:"Smarte pasninger",      t:15,op:">=",phase:"angrep",  info:"A2: Kombinerer, veggspill, tredjemann"},
-      {id:"shot",         label:"Avslutninger",          t:1, op:">=",phase:"angrep",  info:"A3: Trekker til avslutning fra mellomrom"},
-      {id:"v1",           label:"1v1 dueller",           t:10,op:">=",phase:"angrep",  info:"A2: Dribbler fra kant/halvrom — snu spill"},
-      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",phase:"omstilling",info:"Omstilling: Trigger raske overganger"},
+      {id:"total",        label:"Totale aksjoner",       t:40,op:">=",operativt:true,phase:"generelt",info:"Aktiv i skapefasen"},
+      {id:"smart_pass",   label:"Smarte pasninger",      t:15,op:">=",operativt:true,phase:"angrep",  info:"A2: Kombinerer, veggspill, tredjemann"},
+      {id:"shot",         label:"Avslutninger",          t:1, op:">=",operativt:true,phase:"angrep",  info:"A3: Trekker til avslutning fra mellomrom"},
+      {id:"v1",           label:"1v1 dueller",           t:10,op:">=",operativt:true,phase:"angrep",  info:"A2: Dribbler fra kant/halvrom — snu spill"},
+      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",operativt:true,phase:"omstilling",info:"Omstilling: Trigger raske overganger"},
     ],
     pdf:[
-      {id:"xGChain",    label:"xGChain",                 t:1.0,op:">=",phase:"angrep", info:"A2/A3: Høy involvering i sjanseskaping"},
-      {id:"shots",      label:"Avslutninger",            t:2,  op:">=",phase:"angrep", info:"A3: Trekker til avslutning"},
-      {id:"key_passes", label:"Nøkkelpasninger",         t:2,  op:">=",phase:"angrep", info:"A2/A3: Siste pasning før avslutning"},
-      {id:"xG_player",  label:"xG",                     t:0.3,op:">=",phase:"angrep", info:"A3: Havner i gode skuddposisjoner"},
+      {id:"xGChain",    label:"xGChain",                 t:1.0,op:">=",operativt:true,phase:"angrep", info:"A2/A3: Høy involvering i sjanseskaping"},
+      {id:"shots",      label:"Avslutninger",            t:2,  op:">=",operativt:true,phase:"angrep", info:"A3: Trekker til avslutning"},
+      {id:"key_passes", label:"Nøkkelpasninger",         t:2,  op:">=",operativt:true,phase:"angrep", info:"A2/A3: Siste pasning før avslutning"},
+      {id:"xG_player",  label:"xG",                     t:0.3,op:">=",operativt:true,phase:"angrep", info:"A3: Havner i gode skuddposisjoner"},
     ],
     team:[
-      {id:"total",      label:"Sekvenser",               t:35,op:">=",phase:"generelt",info:"Aktiv i angrepsspill"},
-      {id:"shot",       label:"Avslut-sekvenser",        t:3, op:">=",phase:"angrep",  info:"A3: Involvert i avslutningssituasjoner"},
-      {id:"finalThirdP",label:"Siste tredel %",          t:55,op:">=",phase:"angrep",  info:"A2/A3: Opererer i farlige soner"},
+      {id:"total",      label:"Sekvenser",               t:35,op:">=",operativt:true,phase:"generelt",info:"Aktiv i angrepsspill"},
+      {id:"shot",       label:"Avslut-sekvenser",        t:3, op:">=",operativt:true,phase:"angrep",  info:"A3: Involvert i avslutningssituasjoner"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:55,op:">=",operativt:true,phase:"angrep",  info:"A2/A3: Opererer i farlige soner"},
     ],
   },
   FW:{
     player:[
-      {id:"shot",         label:"Avslutninger",          t:3, op:">=",phase:"angrep",  info:"A3: Angriper bakrom og avslutter — scoringsrom"},
-      {id:"v1",           label:"1v1 dueller",           t:8, op:">=",phase:"angrep",  info:"A2/A3: Holder på ball under press — slår CB"},
-      {id:"efficiency",   label:"Effektivitet (+/−)",    t:-3,op:">=",phase:"generelt",info:"Ikke under −3: gevinst i pressjaget"},
-      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",phase:"omstilling",info:"Omstilling: Trigger kontring med løp i bakrom"},
-      {id:"smart_pass",   label:"Smarte pasninger",      t:5, op:">=",phase:"angrep",  info:"A1/A2: Avlaster under press — veggspill"},
+      {id:"shot",         label:"Avslutninger",          t:3, op:">=",operativt:true,phase:"angrep",  info:"A3: Angriper bakrom og avslutter — scoringsrom"},
+      {id:"v1",           label:"1v1 dueller",           t:8, op:">=",operativt:true,phase:"angrep",  info:"A2/A3: Holder på ball under press — slår CB"},
+      {id:"efficiency",   label:"Effektivitet (+/−)",    t:-3,op:">=",operativt:true,phase:"generelt",info:"Ikke under −3: gevinst i pressjaget"},
+      {id:"counterattack",label:"Kontringsinitiativ",    t:1, op:">=",operativt:true,phase:"omstilling",info:"Omstilling: Trigger kontring med løp i bakrom"},
+      {id:"smart_pass",   label:"Smarte pasninger",      t:5, op:">=",operativt:true,phase:"angrep",  info:"A1/A2: Avlaster under press — veggspill"},
     ],
     pdf:[
-      {id:"shots",      label:"Avslutninger",            t:3, op:">=",phase:"angrep",  info:"A3: Angriper bak og avslutter"},
-      {id:"xG_player",  label:"xG",                     t:0.5,op:">=",phase:"angrep", info:"A3: Havner i høykvalitetssjanser"},
-      {id:"xGChain",    label:"xGChain",                 t:1.0,op:">=",phase:"angrep", info:"A2/A3: Sentral i angrepsspill"},
-      {id:"dribbles",   label:"Vellykkede driblinger",   t:1, op:">=",phase:"angrep",  info:"A2: Slår seg forbi forsvarere"},
+      {id:"shots",      label:"Avslutninger",            t:3, op:">=",operativt:true,phase:"angrep",  info:"A3: Angriper bak og avslutter"},
+      {id:"xG_player",  label:"xG",                     t:0.5,op:">=",operativt:true,phase:"angrep", info:"A3: Havner i høykvalitetssjanser"},
+      {id:"xGChain",    label:"xGChain",                 t:1.0,op:">=",operativt:true,phase:"angrep", info:"A2/A3: Sentral i angrepsspill"},
+      {id:"dribbles",   label:"Vellykkede driblinger",   t:1, op:">=",operativt:true,phase:"angrep",  info:"A2: Slår seg forbi forsvarere"},
     ],
     team:[
-      {id:"total",      label:"Sekvenser",               t:25,op:">=",phase:"generelt",info:"Aktiv i angrepsspill"},
-      {id:"shot",       label:"Avslut-sekvenser",        t:4, op:">=",phase:"angrep",  info:"A3: Involvert i avslutningssituasjoner"},
-      {id:"finalThirdP",label:"Siste tredel %",          t:60,op:">=",phase:"angrep",  info:"A3: Opererer i scoringssoner"},
+      {id:"total",      label:"Sekvenser",               t:25,op:">=",operativt:true,phase:"generelt",info:"Aktiv i angrepsspill"},
+      {id:"shot",       label:"Avslut-sekvenser",        t:4, op:">=",operativt:true,phase:"angrep",  info:"A3: Involvert i avslutningssituasjoner"},
+      {id:"finalThirdP",label:"Siste tredel %",          t:60,op:">=",operativt:true,phase:"angrep",  info:"A3: Opererer i scoringssoner"},
     ],
   },
   SUB:{player:[],pdf:[],team:[]},
@@ -374,7 +374,7 @@ const DEFENSE_KPIS=[
     {id:"ppda",         label:"PPDA (trekk før brudd)",t:10,op:"<", manual:false,src:["pdf","team","player"]},
   ]},
   {id:"omstF",label:"Omstillinger (forsvar)",items:[
-    {id:"maalDefTrans", label:"Mål def. overganger",   t:1, op:"<",manual:true,src:["pdf","team","player"]},
+    {id:"maalDefTrans", label:"Mål def. overganger",   t:0.5,op:"<",manual:true,src:["pdf","team","player"]},
     {id:"oppAttacks",   label:"Motst. åpne angrep",    t:43,op:"<",        src:["team"]},
   ]},
   {id:"dodF",label:"Dødball (defensiv)",items:[
@@ -828,6 +828,18 @@ function PlayerModal({player,match,onClose}){
             </div>
           )}
 
+          {/* Operative note */}
+          {tab!=="stats"&&(
+            <div style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:10,
+              padding:"6px 10px",background:T.purple+"0a",
+              border:`1px solid ${T.purple}22`,borderRadius:6}}>
+              <span style={{fontSize:12,color:T.purple,marginTop:1}}>ℹ</span>
+              <span style={{fontSize:10,color:T.muted,lineHeight:1.6}}>
+                Talltersklene er <span style={{color:T.purple,fontWeight:700}}>operative krav</span> fastsatt av Stabæk Analyse — ikke direkte fra fagplanen. Kan justeres i samråd med trenerteamet.
+              </span>
+            </div>
+          )}
+
           {/* KPI checklist for this phase */}
           {tab!=="stats"&&(
             <div style={{marginBottom:14}}>
@@ -851,6 +863,15 @@ function PlayerModal({player,match,onClose}){
                     <div style={{flex:1}}>
                       <div style={{fontSize:12,color:T.text}}>{k.label}</div>
                       {k.info&&<div style={{fontSize:10,color:T.muted,marginTop:1,lineHeight:1.4}}>{k.info}</div>}
+                      {k.operativt&&(
+                        <div style={{marginTop:3,display:"inline-flex",alignItems:"center",gap:3,
+                          background:T.purple+"12",border:`1px solid ${T.purple}28`,
+                          borderRadius:20,padding:"1px 7px"}}>
+                          <span style={{fontSize:8,color:T.purple,letterSpacing:".07em",fontWeight:700}}>
+                            ✎ OPERATIVT KRAV
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div style={{textAlign:"right",flexShrink:0}}>
                       <div style={{fontSize:10,color:T.muted}}>{opS[k.op]}{k.t}</div>
